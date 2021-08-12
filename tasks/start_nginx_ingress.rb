@@ -27,37 +27,10 @@ class StartNginxIngress < PAMTaskHelper
     ]
     wait_output = run_command(wait_command)
 
-    # Get the ingress load balancer ip to return to the caller so they
-    # have some idea of what to hit to test their app connection.
-    lb_ip_lookup_command = [
-      'kubectl',
-      'get',
-      'svc/ingress-nginx-controller',
-      '--namespace=ingress-nginx',
-      %(--output=jsonpath={.status.loadBalancer.ingress[0].ip}),
-    ]
-    load_balancer_ip = ''
-    counter = 0
-    # There may still be a delay before the ip address is readable
-    while load_balancer_ip.empty?
-      load_balancer_ip = run_command(lb_ip_lookup_command)
-      break if !load_balancer_ip.empty?
-
-      counter += 1
-      if counter > timeout.to_i
-        raise TaskHelper::Error.new(
-          "No loadbalancer IP address retrieved after #{timeout} seconds of polling.",
-          'pam_tools/ingress-nginx-no-loadbalancer-ip'
-        )
-      end
-      sleep 1
-    end
-
     {
       command: apply_command.join(' '),
       apply_output: apply_output,
       wait_output: wait_output,
-      load_balancer_ip: load_balancer_ip,
     }
   end
 end

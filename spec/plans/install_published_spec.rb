@@ -81,12 +81,16 @@ describe 'pam_tools::install_published' do
   end
 
   it 'runs' do
+    expect_task('pam_tools::has_ingress_controller')
+      .with_targets(targets)
+      .always_return('_output' => 'true')
     expect_task('pam_tools::get_kots_app_status')
       .with_targets(targets)
       .with_params(
         'kots_slug'      => 'cd4pe',
         'kots_namespace' => 'default',
         'verbose'        => false,
+        '_catch_errors'  => true,
       )
       .always_return({ '_output' => 'not-installed' })
     expect_task('pam_tools::kots_install')
@@ -114,14 +118,18 @@ describe 'pam_tools::install_published' do
         'sts_timeout'    => '300s',
         'http_timeout'   => '60s',
       )
-    result = run_plan('pam_tools::install_published', params)
+    expect_out_message.with_params('  ** Target: spec-host')
+    expect_out_message.with_params('  **   connect hostname: spec-host')
+    expect_out_message.with_params('  **   connect root login: noreply@puppet.com')
 
+    result = run_plan('pam_tools::install_published', params)
     expect(result.ok?).to eq(true)
     expect(result.value['kots_slug']).to eq('cd4pe')
     expect(result.value['kots_app']).to eq('connect')
   end
 
   it 'skips installing if already installed' do
+    expect_task('pam_tools::has_ingress_controller').always_return('_output' => 'true')
     expect_task('pam_tools::get_kots_app_status').always_return({ '_output' => 'ready' })
     expect_task('pam_tools::kots_install').not_be_called
     expect_out_message.with_params('All targets already installed.')
@@ -134,12 +142,15 @@ describe 'pam_tools::install_published' do
   it 'runs without waiting' do
     params['wait_for_app'] = false
 
+    expect_task('pam_tools::has_ingress_controller').always_return('_output' => 'true')
     expect_task('pam_tools::get_kots_app_status').always_return({ '_output' => 'not-installed' })
     expect_task('pam_tools::kots_install')
     expect_task('pam_tools::wait_for_app').not_be_called
+    allow_out_message
 
     result = run_plan('pam_tools::install_published', params)
     expect(result.ok?).to eq(true)
+    expect(result.value['wait_result_set']).to eq({ 'status' => 'skipped' })
   end
 
   context 'with an airgap bundle' do
@@ -160,13 +171,93 @@ describe 'pam_tools::install_published' do
     it 'runs without waiting' do
       params['wait_for_app'] = false
 
+      expect_task('pam_tools::has_ingress_controller').always_return('_output' => 'true')
       expect_task('pam_tools::get_kots_app_status').always_return({ '_output' => 'not-installed' })
       expect_upload(airgap_bundle).with_destination('/tmp/connect.airgap').with_targets(targets)
       expect_task('pam_tools::kots_install')
       expect_task('pam_tools::wait_for_app').not_be_called
+      allow_out_message
 
       result = run_plan('pam_tools::install_published', params)
       expect(result.ok?).to eq(true)
+    end
+  end
+
+  context 'app hostname configuration' do
+    # Basic install steps are the same
+    before(:each) do
+      expect_task('pam_tools::has_ingress_controller').always_return('_output' => 'true')
+      expect_task('pam_tools::get_kots_app_status').always_return({ '_output' => 'not-installed' })
+      expect_task('pam_tools::kots_install')
+      expect_task('pam_tools::wait_for_app')
+    end
+
+    it 'uses ssh target hostname by default' do
+      expect_out_message.with_params('  **   connect hostname: spec-host')
+
+      result = run_plan('pam_tools::install_published', params)
+      expect(result.ok?).to eq(true)
+    end
+
+    it 'generates nip.io for localhost target' do
+      targets[0] = 'localhost'
+      expect_task('pam_tools::get_ingress_ip')
+        .with_targets(['localhost'])
+        .always_return('_output' => '10.20.30.40')
+      expect_out_message.with_params('  **   connect hostname: connect.10.20.30.40.nip.io')
+
+      result = run_plan('pam_tools::install_published', params)
+      expect(result.ok?).to eq(true)
+    end
+
+    it 'penultimately prefers hostname parameter when target is ssh' do
+      params['hostname'] = 'my.app.host'
+      expect_out_message.with_params('  **   connect hostname: my.app.host')
+
+      result = run_plan('pam_tools::install_published', params)
+      expect(result.ok?).to eq(true)
+    end
+
+    it 'penultimately prefers hostname parameter when target is localhost' do
+      targets[0] = 'localhost'
+      params['hostname'] = 'my.app.host'
+      expect_task('pam_tools::get_ingress_ip')
+        .with_targets(['localhost'])
+        .always_return('_output' => '10.20.30.40')
+      expect_out_message.with_params('  **   connect hostname: my.app.host')
+
+      result = run_plan('pam_tools::install_published', params)
+      expect(result.ok?).to eq(true)
+    end
+
+    context 'with config_file' do
+      let(:config_content) do
+        <<~YAML
+          ---
+          apiVersion: 'kots.io/v1beta1'
+          kind: 'ConfigValues'
+          metadata:
+            name: 'connect'
+          spec:
+            values:
+              hostname:
+                value: 'configured.app.host'
+        YAML
+      end
+      let(:config_file) { "#{tmpdir}/config.yaml" }
+
+      before(:each) do
+        File.write(config_file, config_content)
+      end
+
+      it 'ultimately prefers config_file hostname' do
+        params['hostname'] = 'my.app.host'
+        params['config_file'] = config_file
+        expect_out_message.with_params('  **   connect hostname: configured.app.host')
+
+        result = run_plan('pam_tools::install_published', params)
+        expect(result.ok?).to eq(true)
+      end
     end
   end
 end

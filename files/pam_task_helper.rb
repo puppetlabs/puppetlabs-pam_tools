@@ -139,6 +139,18 @@ class PAMTaskHelper < TaskHelper
       end
     end
 
+    # @return [Array] of Service resource hashes across all namespaces.
+    def get_all_services
+      kots_command = [
+        'kubectl',
+        'get',
+        'service',
+        '--all-namespaces',
+        '--output=json',
+      ]
+      JSON.parse(run_command(kots_command))['items']
+    end
+
     # @param namespace [String] the namespace to get from.
     # @return [Array] of deployment and statefulset kind/name strings.
     def get_deployments_and_statefulsets(namespace)

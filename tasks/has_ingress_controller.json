@@ -1,0 +1,8 @@
+{
+  "description": "Checks whether an ingress controller is installed.",
+  "files": [
+    "pam_tools/files/pam_task_helper.rb"
+  ],
+  "input_method": "stdin",
+  "parameters": {}
+}
