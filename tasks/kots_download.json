@@ -1,0 +1,27 @@
+{
+  "description": "Downloads the currently installed source of a given Kots application from the admin console to the given directory.",
+  "files": [
+    "kurl_test/files/kots_task_helper.rb"
+  ],
+  "input_method": "stdin",
+  "parameters": {
+    "kots_slug": {
+      "description": "The replicated application slug.",
+      "type": "String"
+    },
+    "kots_namespace": {
+      "description": "The k8s namespace we're operating in.",
+      "type": "String",
+      "default": "default"
+    },
+    "destination": {
+      "description": "The absolute path to the directory to download the application source to. If not given, will default to '/tmp/${kots_slug}'.",
+      "type": "Optional[String]"
+    },
+    "clear_upstream": {
+      "description": "Whether to delete the yaml manifests from the upstream folder after download. This is useful if we are going to replace it with newer upstream source before uploading back to the admin-console for deployment.",
+      "type": "Boolean",
+      "default": false
+    }
+  }
+}
