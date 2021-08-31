@@ -1,0 +1,34 @@
+{
+  "description": "Wait for a Replicated app to deploy and any statefulsets to be ready.",
+  "input_method": "environment",
+  "parameters": {
+    "kots_slug": {
+      "description": "Replicated slug for the application.",
+      "type": "String"
+    },
+    "app_hostname": {
+      "description": "Resolvable hostname to reach the application locally.",
+      "type": "String"
+    },
+    "kots_namespace": {
+      "description": "The k8s namspace we're operating in.",
+      "type": "String",
+      "default": "default"
+    },
+    "app_timeout": {
+      "description": "Number of seconds to wait for app to deploy.",
+      "type": "Pattern[/[0-9]+s/]",
+      "default": "600s"
+    },
+    "sts_timeout": {
+      "description": "Number of seconds to wait for Deployment and StatefulSet rollouts to complete.",
+      "type": "Pattern[/[0-9]+s/]",
+      "default": "300s"
+    },
+    "http_timeout": {
+      "description": "Number of seconds to wait for app http/s to return 'ok'",
+      "type": "Pattern[/[0-9]+s/]",
+      "default": "60s"
+    }
+  }
+}
