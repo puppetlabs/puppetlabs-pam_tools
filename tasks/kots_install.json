@@ -1,7 +1,7 @@
 {
   "description": "Install a Replicated application with kubectl-kots for testing. This task takes several shortcuts for configuration and security which are not suitable for production use. It is not idempotent.",
   "files": [
-    "kurl_test/files/kots_task_helper.rb"
+    "pam_tools/files/pam_task_helper.rb"
   ],
   "input_method": "stdin",
   "parameters": {

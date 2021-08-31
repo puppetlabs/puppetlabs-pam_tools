@@ -1,7 +1,7 @@
 {
   "description": "Upload the given source directory on the target host to the Kots admin-console, and optionally deploy it. Assumes a version of the application is already installed.",
   "files": [
-    "kurl_test/files/kots_task_helper.rb"
+    "pam_tools/files/pam_task_helper.rb"
   ],
   "input_method": "stdin",
   "parameters": {

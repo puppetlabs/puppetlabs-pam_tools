@@ -1,9 +1,9 @@
 #! /usr/bin/env ruby
 
-require_relative '../files/kots_task_helper.rb'
+require_relative '../files/pam_task_helper.rb'
 
 # Delete a Replicated app's k8s resources.
-class DeleteK8sAppResources < KotsTaskHelper
+class DeleteK8sAppResources < PAMTaskHelper
 
   def task(kots_slug:, kots_namespace:, scaledown_timeout:, **_kwargs)
     api_resources_command = [

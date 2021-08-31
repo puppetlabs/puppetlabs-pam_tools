@@ -1,7 +1,7 @@
 {
   "description": "Downloads the currently installed source of a given Kots application from the admin console to the given directory.",
   "files": [
-    "kurl_test/files/kots_task_helper.rb"
+    "pam_tools/files/pam_task_helper.rb"
   ],
   "input_method": "stdin",
   "parameters": {

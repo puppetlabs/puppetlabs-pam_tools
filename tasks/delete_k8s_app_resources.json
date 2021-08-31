@@ -1,7 +1,7 @@
 {
   "description": "Delete the kubernetes resources for a given replicated app. Does not remove the app from the Replicated admin console, which allows for re-installing from subsequent application uploads.",
   "files": [
-    "kurl_test/files/kots_task_helper.rb"
+    "pam_tools/files/pam_task_helper.rb"
   ],
   "input_method": "stdin",
   "parameters": {

@@ -1,9 +1,9 @@
 #! /usr/bin/env ruby
 
-require_relative '../files/kots_task_helper.rb'
+require_relative '../files/pam_task_helper.rb'
 
 # Return state of a Kots application.
-class GetKotsAppStatus < KotsTaskHelper
+class GetKotsAppStatus < PAMTaskHelper
 
   def task(kots_slug:, kots_namespace:, verbose:, **_kwargs)
     kots_command = [

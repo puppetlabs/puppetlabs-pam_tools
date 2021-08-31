@@ -85,7 +85,7 @@ end
 require 'open3'
 
 # Extends puppetlabs-ruby_task_helper with some command handling.
-class KotsTaskHelper < TaskHelper
+class PAMTaskHelper < TaskHelper
 
   # Execute a command on the system.
   # @return [Boolean] true if successful, false otherwise.

@@ -1,9 +1,9 @@
 #! /usr/bin/env ruby
 
-require_relative '../files/kots_task_helper.rb'
+require_relative '../files/pam_task_helper.rb'
 
 # Download Kots application source from the admin console.
-class KotsDownload < KotsTaskHelper
+class KotsDownload < PAMTaskHelper
   def task(kots_slug:, kots_namespace:, destination: nil, clear_upstream: false, **_kwargs)
     destination ||= "/tmp/#{kots_slug}"
 

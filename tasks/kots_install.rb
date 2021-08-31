@@ -2,10 +2,10 @@
 
 require 'tmpdir'
 require 'yaml'
-require_relative '../files/kots_task_helper.rb'
+require_relative '../files/pam_task_helper.rb'
 
 # Install a Replicated application via kubectl-kots.
-class KotsInstall < KotsTaskHelper
+class KotsInstall < PAMTaskHelper
   # Extract the KOTS_SLUG from the license hash.
   def get_slug(license)
     raise(ArgumentError, %(Expected a license hash, but got "#{license}")) if !license.is_a?(Hash)

@@ -1,9 +1,9 @@
 #! /usr/bin/env ruby
 
-require_relative '../files/kots_task_helper.rb'
+require_relative '../files/pam_task_helper.rb'
 
 # Upload and deploy Replicated app source to Kots admin-console.
-class KotsUpload < KotsTaskHelper
+class KotsUpload < PAMTaskHelper
   def task(kots_slug:, kots_namespace:, source: nil, deploy: false, skip_preflights: false, **_kwargs)
     source ||= "/tmp/#{kots_slug}"
 

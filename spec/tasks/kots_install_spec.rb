@@ -162,7 +162,7 @@ describe 'kurl_test::kots_install' do
       params_hash = { foo: 'bar' }
       output_hash = { thing: 'done' }
 
-      runner = instance_double('KotsTaskHelper')
+      runner = instance_double('PAMTaskHelper')
       expect($stdin).to receive(:read).and_return(json_input)
       expect(runner).to receive(:task).with(params_hash).and_return(output_hash)
       expect(KotsInstall).to receive(:new).and_return(runner)
