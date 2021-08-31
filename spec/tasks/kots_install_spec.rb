@@ -17,7 +17,7 @@ describe 'kurl_test::kots_install' do
     end
 
     it 'raises if not given a hash' do
-      expect { task.get_slug(nil) }.to raise_error(ArgumentError, /expected a license hash/i)
+      expect { task.get_slug(nil) }.to raise_error(ArgumentError, %r{expected a license hash}i)
     end
   end
 
@@ -115,61 +115,60 @@ describe 'kurl_test::kots_install' do
   end
 
   context '#task with optional args' do
-  include_context('with_tmpdir')
+    include_context('with_tmpdir')
 
-  it 'installs' do
-    config_content = { 'apiVersion' => 'kots.io/v1beta1', 'kind' => 'ConfigValues' }
-    args = {
-      license_content: license('connect'),
-      password: 'puppet',
-      hostname: 'foo.rspec',
-      kots_namespace: 'default',
-      kots_wait_duration: '5m',
-      config_content: config_content.to_yaml,
-      kots_install_options: '',
-      airgap_bundle: './bundle.airgap',
-    }
+    it 'installs' do
+      config_content = { 'apiVersion' => 'kots.io/v1beta1', 'kind' => 'ConfigValues' }
+      args = {
+        license_content: license('connect'),
+        password: 'puppet',
+        hostname: 'foo.rspec',
+        kots_namespace: 'default',
+        kots_wait_duration: '5m',
+        config_content: config_content.to_yaml,
+        kots_install_options: '',
+        airgap_bundle: './bundle.airgap',
+      }
 
-    expect(Dir).to receive(:mktmpdir).with('kots-install').and_return(tmpdir)
-    expect(task).to receive(:run_command).with(
-      [
-        'kubectl-kots',
-        'install',
-        'puppet-application-manager/stable',
-        '--namespace=default',
-        '--shared-password=puppet',
-        '--port-forward=false',
-        "--license-file=#{tmpdir}/license.yaml",
-        "--config-values=#{tmpdir}/config.yaml",
-        '--wait-duration=5m',
-        '--airgap-bundle=./bundle.airgap',
-      ]
-    ).and_return('installed')
+      expect(Dir).to receive(:mktmpdir).with('kots-install').and_return(tmpdir)
+      expect(task).to receive(:run_command).with(
+        [
+          'kubectl-kots',
+          'install',
+          'puppet-application-manager/stable',
+          '--namespace=default',
+          '--shared-password=puppet',
+          '--port-forward=false',
+          "--license-file=#{tmpdir}/license.yaml",
+          "--config-values=#{tmpdir}/config.yaml",
+          '--wait-duration=5m',
+          '--airgap-bundle=./bundle.airgap',
+        ]
+      ).and_return('installed')
 
-    expect(task.task(args)).to include(
-      appname: 'connect',
-      kots_slug: 'cd4pe',
-    )
+      expect(task.task(args)).to include(
+        appname: 'connect',
+        kots_slug: 'cd4pe',
+      )
 
-    config = YAML.safe_load(File.read(File.join(tmpdir, 'config.yaml')))
-    expect(config).to eq(config_content)
+      config = YAML.safe_load(File.read(File.join(tmpdir, 'config.yaml')))
+      expect(config).to eq(config_content)
+    end
   end
-end
 
   context '.run' do
-
     it 'installs' do
       json_input = '{"foo":"bar"}'
       params_hash = { foo: 'bar' }
       output_hash = { thing: 'done' }
 
-      runner = double('runner')
+      runner = instance_double('KotsTaskHelper')
       expect($stdin).to receive(:read).and_return(json_input)
       expect(runner).to receive(:task).with(params_hash).and_return(output_hash)
       expect(KotsInstall).to receive(:new).and_return(runner)
 
       expect { KotsInstall.run }.to(
-        output("#{output_hash.to_json}").to_stdout
+        output(output_hash.to_json.to_s).to_stdout
       )
     end
   end

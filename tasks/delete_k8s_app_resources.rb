@@ -2,9 +2,10 @@
 
 require_relative '../files/kots_task_helper.rb'
 
+# Delete a Replicated app's k8s resources.
 class DeleteK8sAppResources < KotsTaskHelper
 
-  def task(kots_slug:, kots_namespace:, scaledown_timeout:, **kwargs)
+  def task(kots_slug:, kots_namespace:, scaledown_timeout:, **_kwargs)
     api_resources_command = [
       'kubectl',
       'api-resources',
@@ -20,7 +21,8 @@ class DeleteK8sAppResources < KotsTaskHelper
     ]
 
     # Attempt to scale down before deletion.
-    scaled, scale_messages = [], []
+    scaled = []
+    scale_messages = []
     scaleable_query = [
       'kubectl',
       'get',
@@ -35,7 +37,7 @@ class DeleteK8sAppResources < KotsTaskHelper
         '--replicas=0',
       ] + common_options
       scale_output = run_command(scale_command).split("\n")
-      scaled, scale_messages = scale_output.partition { |l| l.match(/ scaled$/) }
+      scaled, scale_messages = scale_output.partition { |l| l.match(%r{ scaled$}) }
 
       wait_command = [
         'kubectl',
@@ -54,7 +56,7 @@ class DeleteK8sAppResources < KotsTaskHelper
       '--wait=true',
     ] + common_options
     delete_output = run_command(delete_command).split("\n")
-    deleted, delete_messages = delete_output.partition { |l| l.match(/ deleted$/) }
+    deleted, delete_messages = delete_output.partition { |l| l.match(%r{ deleted$}) }
 
     {
       kots_slug: kots_slug,

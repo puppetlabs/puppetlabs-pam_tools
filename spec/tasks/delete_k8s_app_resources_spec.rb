@@ -52,7 +52,7 @@ describe 'kurl_test::delete_k8s_app_resources' do
           deleted: [
             'one deleted',
             'two deleted',
-          ]
+          ],
         )
       end
     end

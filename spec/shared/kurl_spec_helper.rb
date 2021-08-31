@@ -21,7 +21,7 @@ module KurlTest
     end
 
     def license_hash(appname_string)
-      YAML.load(license(appname_string))
+      YAML.safe_load(license(appname_string))
     end
   end
 end

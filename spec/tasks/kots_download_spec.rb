@@ -45,8 +45,11 @@ describe 'kurl_test::kots_download' do
     it 'clears upstream source after download' do
       args[:clear_upstream] = true
 
-      expect(Dir).to receive(:glob).with('/tmp/app/app/upstream/*.yaml')
-        .and_return(%w[/tmp/app/app/upstream/a.yaml /tmp/app/app/upstream/b.yaml])
+      expect(Dir).to(
+        receive(:glob)
+          .with('/tmp/app/app/upstream/*.yaml')
+          .and_return(%w[/tmp/app/app/upstream/a.yaml /tmp/app/app/upstream/b.yaml])
+      )
       expect(File).to receive(:delete).with('/tmp/app/app/upstream/a.yaml')
       expect(File).to receive(:delete).with('/tmp/app/app/upstream/b.yaml')
 

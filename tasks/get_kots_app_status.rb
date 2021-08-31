@@ -2,9 +2,10 @@
 
 require_relative '../files/kots_task_helper.rb'
 
+# Return state of a Kots application.
 class GetKotsAppStatus < KotsTaskHelper
 
-  def task(kots_slug:, kots_namespace:, verbose:, **kwargs)
+  def task(kots_slug:, kots_namespace:, verbose:, **_kwargs)
     kots_command = [
       'kubectl-kots',
       'get',
@@ -14,7 +15,7 @@ class GetKotsAppStatus < KotsTaskHelper
     ]
     output = run_command(kots_command)
     app_list = JSON.parse(output)
-    status_hash = app_list.select { |s| s['slug'] == kots_slug }.first
+    status_hash = app_list.find { |s| s['slug'] == kots_slug }
     app_state = status_hash.nil? ? 'not-installed' : status_hash['state']
 
     if verbose

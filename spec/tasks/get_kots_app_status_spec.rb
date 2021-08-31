@@ -51,7 +51,7 @@ describe 'kurl_test::get_kots_app_status' do
             {
               'slug'  => 'app',
               'state' => 'ready',
-            }
+            },
           ],
         }
       )

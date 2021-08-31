@@ -38,6 +38,7 @@ Style/BlockDelimiters:
   EnforcedStyle: braces_for_chaining
 Style/ClassAndModuleChildren:
   Description: Compact style reduces the required amount of indentation.
+  Enabled: false
   EnforcedStyle: compact
 Style/EmptyElse:
   Description: Enforce against empty else clauses, but allow `nil` for clarity.
@@ -63,6 +64,7 @@ Style/TernaryParentheses:
 Style/TrailingCommaInArguments:
   Description: Prefer always trailing comma on multiline argument lists. This makes
     diffs, and re-ordering nicer.
+  Enabled: false
   EnforcedStyleForMultiline: comma
 Style/TrailingCommaInArrayLiteral:
   Description: Prefer always trailing comma on multiline literals. This makes diffs,
@@ -78,6 +80,7 @@ Style/Documentation:
   - lib/puppet/parser/functions/**/*
   - spec/**/*
 Style/WordArray:
+  Enabled: false
   EnforcedStyle: brackets
 Performance/AncestorsInclude:
   Enabled: true
@@ -109,6 +112,8 @@ Style/CollectionMethods:
   Enabled: true
 Style/MethodCalledOnDoEndBlock:
   Enabled: true
+Style/MultilineTernaryOperator:
+  Enabled: false
 Style/StringMethods:
   Enabled: true
 Bundler/InsecureProtocolSource:
@@ -134,6 +139,8 @@ Layout/EmptyLineAfterGuardClause:
 Layout/EmptyLinesAroundArguments:
   Enabled: false
 Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: false
+Layout/EmptyLinesAroundClassBody:
   Enabled: false
 Layout/EndOfLine:
   Enabled: false
@@ -428,6 +435,8 @@ Style/MinMax:
 Style/MixinUsage:
   Enabled: false
 Style/MultilineWhenThen:
+  Enabled: false
+Style/NegatedIf:
   Enabled: false
 Style/NegatedUnless:
   Enabled: false

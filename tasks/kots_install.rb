@@ -4,10 +4,11 @@ require 'tmpdir'
 require 'yaml'
 require_relative '../files/kots_task_helper.rb'
 
+# Install a Replicated application via kubectl-kots.
 class KotsInstall < KotsTaskHelper
   # Extract the KOTS_SLUG from the license hash.
   def get_slug(license)
-    raise(ArgumentError, %Q{Expected a license hash, but got "#{license}"}) if !license.kind_of?(Hash)
+    raise(ArgumentError, %(Expected a license hash, but got "#{license}")) if !license.is_a?(Hash)
     spec = license['spec'] || {}
     spec['appSlug']
   end
@@ -26,7 +27,7 @@ class KotsInstall < KotsTaskHelper
 
   # Generate a base configuration common to our replicated apps.
   def base_config(appname, hostname)
-    YAML.load(<<~YAML)
+    YAML.safe_load(<<~YAML)
       apiVersion: 'kots.io/v1beta1'
       kind: 'ConfigValues'
       metadata:
@@ -44,8 +45,8 @@ class KotsInstall < KotsTaskHelper
 
   # Generate root email and password config hash if the app uses it.
   def root_account_config(appname, password)
-    if ['cd4pe','connect'].include?(appname)
-      YAML.load(<<~YAML)
+    if ['cd4pe', 'connect'].include?(appname)
+      YAML.safe_load(<<~YAML)
         root_email:
           value: 'noreply@puppet.com'
         root_password:
@@ -60,7 +61,7 @@ class KotsInstall < KotsTaskHelper
   def constraints_config(appname)
     case appname
     when 'connect'
-      YAML.load(<<~YAML)
+      YAML.safe_load(<<~YAML)
         connect_postgres_console_memory:
           value: '256'
         connect_postgres_puppetdb_memory:
@@ -88,7 +89,7 @@ class KotsInstall < KotsTaskHelper
           value: '100m'
       YAML
     when 'comply'
-      YAML.load(<<~YAML)
+      YAML.safe_load(<<~YAML)
         scarp_cpu_request:
           value: 500m
         theq_cpu_request:
@@ -112,8 +113,8 @@ class KotsInstall < KotsTaskHelper
   end
 
   # Install the application.
-  def task(license_content:, password:, hostname:, kots_namespace:, kots_wait_duration:, config_content: nil, kots_install_options: '', airgap_bundle: nil, **kwargs)
-    license = YAML.load(license_content)
+  def task(license_content:, password:, hostname:, kots_namespace:, kots_wait_duration:, config_content: nil, kots_install_options: '', airgap_bundle: nil, **_kwargs)
+    license = YAML.safe_load(license_content)
 
     tmpdir = Dir.mktmpdir('kots-install')
 
@@ -132,10 +133,10 @@ class KotsInstall < KotsTaskHelper
       'puppet-application-manager/stable',
       "--namespace=#{kots_namespace}",
       "--shared-password=#{password}",
-      "--port-forward=false",
+      '--port-forward=false',
       "--license-file=#{license_file}",
       "--config-values=#{config_file}",
-      "#{kots_install_options}".split(' '),
+      kots_install_options.to_s.split(' '),
       "--wait-duration=#{kots_wait_duration}",
     ].flatten
     unless airgap_bundle.nil?

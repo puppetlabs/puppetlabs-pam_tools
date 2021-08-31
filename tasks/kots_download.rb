@@ -2,8 +2,9 @@
 
 require_relative '../files/kots_task_helper.rb'
 
+# Download Kots application source from the admin console.
 class KotsDownload < KotsTaskHelper
-  def task(kots_slug:, kots_namespace:, destination: nil, clear_upstream: false, **kwargs)
+  def task(kots_slug:, kots_namespace:, destination: nil, clear_upstream: false, **_kwargs)
     destination ||= "/tmp/#{kots_slug}"
 
     kots_command = [
@@ -12,7 +13,7 @@ class KotsDownload < KotsTaskHelper
       kots_slug,
       "--namespace=#{kots_namespace}",
       "--dest=#{destination}",
-      "--overwrite",
+      '--overwrite',
     ]
     output = run_command(kots_command)
 

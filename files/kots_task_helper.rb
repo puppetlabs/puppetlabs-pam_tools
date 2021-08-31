@@ -3,6 +3,7 @@
 require 'json'
 
 # Pulled from: https://raw.githubusercontent.com/puppetlabs/puppetlabs-ruby_task_helper/main/files/task_helper.rb
+# rubocop:disable Style/Documentation, Lint/UnusedMethodArgument
 class TaskHelper
   attr_reader :debug_statements
 
@@ -79,6 +80,7 @@ class TaskHelper
     exit 1
   end
 end
+# rubocop:enable Style/Documentation, Lint/UnusedMethodArgument
 
 require 'open3'
 
@@ -89,7 +91,7 @@ class KotsTaskHelper < TaskHelper
   # @return [Boolean] true if successful, false otherwise.
   def test_command(cmd_array)
     _output, status = Open3.capture2e(*cmd_array)
-    return status.success?
+    status.success?
   end
 
   # Execute a command on the system. Exit on failure.
