@@ -1,0 +1,23 @@
+{
+  "description": "Delete the kubernetes resources for a given replicated app. Does not remove the app from the Replicated admin console, which allows for re-installing from subsequent application uploads.",
+  "files": [
+    "kurl_test/files/kots_task_helper.rb"
+  ],
+  "input_method": "stdin",
+  "parameters": {
+    "kots_namespace": {
+      "description": "The k8s namespace we're operating in.",
+      "type": "String",
+      "default": "default"
+    },
+    "kots_slug": {
+      "description": "The Replicated application slug.",
+      "type": "String"
+    },
+    "scaledown_timeout": {
+      "description": "Seconds to wait for app to scale down to 0 replica before deletion of all related resources.",
+      "type": "Integer",
+      "default": 300
+    }
+  }
+}
