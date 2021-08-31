@@ -1,0 +1,33 @@
+{
+  "description": "Upload the given source directory on the target host to the Kots admin-console, and optionally deploy it. Assumes a version of the application is already installed.",
+  "files": [
+    "kurl_test/files/kots_task_helper.rb"
+  ],
+  "input_method": "stdin",
+  "parameters": {
+    "kots_slug": {
+      "description": "The replicated application slug.",
+      "type": "String"
+    },
+    "kots_namespace": {
+      "description": "The k8s namespace we're operating in.",
+      "type": "String",
+      "default": "default"
+    },
+    "source": {
+      "description": "The absolute path to the source directory to upload.",
+      "type": "String",
+      "default": "/tmp/kots-download"
+    },
+    "deploy": {
+      "description": "Whether to have the admin-console deploy after uploading.",
+      "type": "Boolean",
+      "default": true
+    },
+    "skip_preflights": {
+      "description": "Whether to skip preflight checks after uploading.",
+      "type": "Boolean",
+      "default": false
+    }
+  }
+}
