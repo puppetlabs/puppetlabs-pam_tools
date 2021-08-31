@@ -4,7 +4,7 @@ require 'spec_helper'
 require_relative '../../tasks/kots_install.rb'
 require 'yaml'
 
-describe 'kurl_test::kots_install' do
+describe 'pam_tools::kots_install' do
   let(:task) { KotsInstall.new }
 
   context '#get_slug' do

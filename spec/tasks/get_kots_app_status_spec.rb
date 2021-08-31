@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../../tasks/get_kots_app_status.rb'
 
-describe 'kurl_test::get_kots_app_status' do
+describe 'pam_tools::get_kots_app_status' do
   let(:task) { GetKotsAppStatus.new }
 
   let(:args) do

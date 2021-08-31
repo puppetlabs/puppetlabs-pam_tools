@@ -2,7 +2,7 @@
 
 require 'yaml'
 
-module KurlTest
+module PAMTools
   module SpecHelper
     def project_root
       File.expand_path(File.join(__dir__, '..', '..'))

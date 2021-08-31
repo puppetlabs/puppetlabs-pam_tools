@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../../tasks/delete_k8s_app_resources.rb'
 
-describe 'kurl_test::delete_k8s_app_resources' do
+describe 'pam_tools::delete_k8s_app_resources' do
   let(:task) { DeleteK8sAppResources.new }
 
   context '#task' do

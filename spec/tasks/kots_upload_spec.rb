@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative '../../tasks/kots_upload.rb'
 
-describe 'kurl_test::kots_upload' do
+describe 'pam_tools::kots_upload' do
   let(:task) { KotsUpload.new }
   let(:args) do
     {

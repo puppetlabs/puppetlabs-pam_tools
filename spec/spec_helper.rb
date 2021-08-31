@@ -3,10 +3,10 @@
 require 'pp'
 require 'rspec'
 require 'shared/contexts'
-require 'shared/kurl_spec_helper'
+require 'shared/pam_spec_helper'
 
 RSpec.configure do |c|
-  c.include(KurlTest::SpecHelper)
+  c.include(PAMTools::SpecHelper)
   c.mock_with :rspec
 end
 
