@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
+require 'pp'
+require 'rspec'
+require 'shared/contexts'
+require 'shared/kurl_spec_helper'
+
 RSpec.configure do |c|
+  c.include(KurlTest::SpecHelper)
   c.mock_with :rspec
 end
 

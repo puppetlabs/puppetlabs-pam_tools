@@ -1,0 +1,54 @@
+apiVersion: kots.io/v1beta1
+kind: License
+metadata:
+  name: rspec
+spec:
+  appSlug: cd4pe
+  channelID: rspeconnectfakechannelid
+  channelName: Connect Unstable
+  customerName: Rspec
+  endpoint: https://replicated.app
+  entitlements:
+    Contact:
+      isHidden: true
+      title: License Contact
+      value: "rspec@puppet.rspec"
+      valueType: String
+    cd_entitlement:
+      title: Entitled to CD for PE
+      value: false
+      valueType: Boolean
+    cd_node_price:
+      isHidden: true
+      title: CD for PE per node price
+      value: 0
+      valueType: Integer
+    connect_entitlement:
+      title: Puppet Connect Entitlement
+      value: true
+      valueType: Boolean
+    eula:
+      isHidden: true
+      title: EULA
+      value: "Long \"escaped\" eula blabber."
+      valueType: Text
+    expires_at:
+      description: License Expiration
+      title: Expiration
+      value: "2022-01-14T00:00:00Z"
+      valueType: String
+    sfdc_license_no:
+      isHidden: true
+      title: SFDC License No.
+      value: ""
+      valueType: String
+    start_date:
+      isHidden: true
+      title: Start Date
+      value: 1/1/2021
+      valueType: String
+  isGitOpsSupported: true
+  licenseID: rspeclicenseidhash
+  licenseSequence: 7
+  licenseType: dev
+  signature: rspecsignature=

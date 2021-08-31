@@ -1,0 +1,35 @@
+apiVersion: kots.io/v1beta1
+kind: License
+metadata:
+  name: rspec
+spec:
+  appSlug: comply
+  channelID: rspeccomplyfakechannelid
+  channelName: Unstable
+  customerName: Rspec
+  endpoint: https://replicated.app
+  entitlements:
+    Contact:
+      title: License Contact
+      value: "rspec@puppet.rspec"
+      valueType: String
+    SFDC_License_No:
+      isHidden: true
+      title: SFDC License No.
+      value: ""
+      valueType: String
+    expires_at:
+      description: License Expiration
+      title: Expiration
+      value: "2022-05-04T07:00:00Z"
+      valueType: String
+    licensedNodes:
+      title: No. Licensed Nodes
+      value: 1
+      valueType: Integer
+  isGitOpsSupported: true
+  isSnapshotSupported: true
+  licenseID: rspeclicenseidhash
+  licenseSequence: 1
+  licenseType: dev
+  signature: rspecsignature=
