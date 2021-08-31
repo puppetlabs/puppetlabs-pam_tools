@@ -1,0 +1,23 @@
+{
+  "description": "Return the state of a given Kots application, or not-installed.",
+  "files": [
+    "kurl_test/files/kots_task_helper.rb"
+  ],
+  "input_method": "stdin",
+  "parameters": {
+    "kots_slug": {
+      "description": "The replicated application slug.",
+      "type": "String"
+    },
+    "kots_namespace": {
+      "description": "The k8s namespace the application is installed in.",
+      "type": "String",
+      "default": "default"
+    },
+    "verbose": {
+      "description": "Return json output, including the full hash of all Kots applicaiton statuses.",
+      "type": "Boolean",
+      "default": false
+    }
+  }
+}
