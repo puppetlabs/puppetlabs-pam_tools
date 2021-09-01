@@ -1,0 +1,7 @@
+{
+  "description": "Tear down the Nginx IngressController.",
+  "files": [
+    "pam_tools/files/pam_task_helper.rb"
+  ],
+  "input_method": "stdin"
+} 
