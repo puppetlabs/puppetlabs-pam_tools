@@ -1,0 +1,4 @@
+---
+name: pam_tools
+modules:
+  - puppetlabs/stdlib
