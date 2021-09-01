@@ -1,0 +1,24 @@
+{
+  "description": "Starts an Nginx IngressController in the cluster. (https://github.com/kubernetes/ingress-nginx)",
+  "files": [
+    "pam_tools/files/pam_task_helper.rb"
+  ],
+  "input_method": "stdin",
+  "parameters": {
+    "version": {
+      "description": "The controller version to install in the cluster.",
+      "type": "String",
+      "default": "0.48.1"
+    },
+    "provider": {
+      "description": "The provider implementation to use.",
+      "type": "String",
+      "default": "cloud"
+    },
+    "timeout": {
+      "description": "Number of secs to wait for controller to be ready.",
+      "type": "Integer",
+      "default": 90
+    }
+  }
+}
