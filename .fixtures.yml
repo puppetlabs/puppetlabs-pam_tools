@@ -2,5 +2,14 @@
 # See https://github.com/puppetlabs/puppetlabs_spec_helper#using-fixtures for details
 ---
 fixtures:
+  repositories:
+    bolt:
+      repo: 'git@github.com:puppetlabs/bolt.git'
+      ref: 'origin/main'
+      target: 'spec/fixtures'
+  symlinks:
+    file: "#{source_dir}/spec/fixtures/bolt/bolt-modules/file"
+#    boltlib: "#{source_dir}/spec/fixtures/bolt/bolt-modules/boltlib"
+#    out: "#{source_dir}/spec/fixtures/bolt/bolt-modules/out"
   forge_modules:
      stdlib: "puppetlabs/stdlib"
