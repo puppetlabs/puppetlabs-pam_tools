@@ -1,0 +1,23 @@
+{
+  "description": "Use kubectl-kots to delete an instance of a Replicated app from the Kots admin-console. Note that this does not delete the application resources from kubernetes.",
+  "files": [
+    "pam_tools/files/pam_task_helper.rb"
+  ],
+  "input_method": "stdin",
+  "parameters": {
+    "kots_slug": {
+      "description": "The replicated application slug to delete. Or '*' to delete all listed applications from the admin-console.",
+      "type": "Variant[Array[String],String]"
+    },
+    "kots_namespace": {
+      "description": "The k8s namespace the application is installed in.",
+      "type": "String",
+      "default": "default"
+    },
+    "force": {
+      "description": "Remove the application reference from the console even if it was already deployed.",
+      "type": "Boolean",
+      "default": false
+    }
+  }
+}

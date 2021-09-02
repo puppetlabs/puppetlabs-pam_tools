@@ -87,6 +87,22 @@ require 'open3'
 # Extends puppetlabs-ruby_task_helper with some command handling.
 class PAMTaskHelper < TaskHelper
 
+  # Kots command helpers.
+  module KotsCommands
+    def kots_app_status(namespace)
+      command = [
+        'kubectl-kots',
+        'get',
+        'apps',
+        "--namespace=#{namespace}",
+        '--output=json',
+      ]
+      run_command(command)
+    end
+  end
+
+  include KotsCommands
+
   # Execute a command on the system.
   # @return [Boolean] true if successful, false otherwise.
   def test_command(cmd_array)

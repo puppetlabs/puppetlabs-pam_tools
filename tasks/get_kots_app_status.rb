@@ -6,14 +6,7 @@ require_relative '../files/pam_task_helper.rb'
 class GetKotsAppStatus < PAMTaskHelper
 
   def task(kots_slug:, kots_namespace:, verbose:, **_kwargs)
-    kots_command = [
-      'kubectl-kots',
-      'get',
-      'apps',
-      "--namespace=#{kots_namespace}",
-      '--output=json',
-    ]
-    output = run_command(kots_command)
+    output = kots_app_status(kots_namespace)
     app_list = JSON.parse(output)
     status_hash = app_list.find { |s| s['slug'] == kots_slug }
     app_state = status_hash.nil? ? 'not-installed' : status_hash['state']
