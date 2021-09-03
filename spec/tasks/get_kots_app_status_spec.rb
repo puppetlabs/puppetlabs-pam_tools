@@ -23,9 +23,18 @@ describe 'pam_tools::get_kots_app_status' do
       ]
     EOS
   end
+  let(:kotsadm) { 'kotsadm-pod-name' }
 
   context '#task' do
     before(:each) do
+      expect(task).to receive(:run_command).with(
+        include(
+          'kubectl',
+          'get',
+          'pod',
+          '--namespace=default',
+        )
+      ).and_return(kotsadm)
       expect(task).to receive(:run_command).with(
         [
           'kubectl-kots',
@@ -45,6 +54,7 @@ describe 'pam_tools::get_kots_app_status' do
       args[:verbose] = true
       expect(task.task(args)).to eq(
         {
+          kots_installed: true,
           kots_slug: 'app',
           app_state: 'ready',
           app_status_list: [
@@ -72,6 +82,37 @@ describe 'pam_tools::get_kots_app_status' do
       it 'returns not-installed' do
         expect(task.task(args)).to eq('not-installed')
       end
+    end
+  end
+
+  context 'when kots not installed' do
+    let(:kotsadm) { '' }
+
+    before(:each) do
+      expect(task).to receive(:run_command).with(
+        include(
+          'kubectl',
+          'get',
+          'pod',
+          '--namespace=default',
+        )
+      ).and_return('')
+    end
+
+    it 'returns not-installed' do
+      expect(task.task(args)).to eq('not-installed')
+    end
+
+    it 'returns verbose status' do
+      args[:verbose] = true
+      expect(task.task(args)).to eq(
+        {
+          kots_installed: false,
+          kots_slug: 'app',
+          app_state: 'not-installed',
+          app_status_list: [],
+        }
+      )
     end
   end
 end

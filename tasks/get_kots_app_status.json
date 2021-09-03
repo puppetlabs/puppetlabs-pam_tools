@@ -1,5 +1,5 @@
 {
-  "description": "Return the state of a given Kots application, or not-installed.",
+  "description": "Return the state of a given Kots application, or not-installed. Will also return not-installed if kots itself is not installed.",
   "files": [
     "pam_tools/files/pam_task_helper.rb"
   ],
