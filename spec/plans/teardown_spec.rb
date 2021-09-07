@@ -53,5 +53,21 @@ describe 'pam_tools::teardown' do
     expect(result.value['delete_kotsadm_result_set']).to eq('not-done')
   end
 
-  it 'deletes and removes app and deletes kotsadm'
+  it 'deletes app and deletes kotsadm' do
+    params['delete_kotsadm'] = true
+    expect_task('pam_tools::delete_kotsadm')
+      .with_targets(targets)
+      .with_params(
+        'kots_namespace'    => 'default',
+        'scaledown_timeout' => 300,
+      )
+
+    result = run_plan('pam_tools::teardown', params)
+
+    expect(result.ok?).to eq(true)
+    expect(result.value['kots_slug']).to eq('app')
+    expect(result.value['destroy_app_result_set']).to be_kind_of(Bolt::ResultSet)
+    expect(result.value['remove_app_from_console_result_set']).to eq('not-done')
+    expect(result.value['delete_kotsadm_result_set']).to be_kind_of(Bolt::ResultSet)
+  end
 end

@@ -24,7 +24,7 @@ describe 'pam_tools::delete_k8s_app_resources' do
         [
           'kubectl',
           'get',
-          'deployments,replicasets,statefulsets',
+          'deployments,statefulsets',
           '--output=name',
           '--namespace=default',
           '--selector=app.kubernetes.io/part-of=app',
@@ -48,6 +48,7 @@ describe 'pam_tools::delete_k8s_app_resources' do
       it 'deletes the k8s application resources' do
         expect(task.task(args)).to include(
           kots_slug: 'app',
+          messages_from_scale: ['No deployments or statefulsets to scale down.'],
           messages_from_delete: ['message'],
           deleted: [
             'one deleted',
@@ -77,7 +78,7 @@ describe 'pam_tools::delete_k8s_app_resources' do
           [
             'kubectl',
             'scale',
-            'deployments,replicasets,statefulsets',
+            'deployments,statefulsets',
             '--replicas=0',
             '--namespace=default',
             '--selector=app.kubernetes.io/part-of=app',

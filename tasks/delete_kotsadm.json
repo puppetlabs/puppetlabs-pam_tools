@@ -1,0 +1,19 @@
+{
+  "description": "Delete the Kots admin-console applicaiton from the cluster. Note, if you use this on a Kurl host, you will need to re-run the Kurl installer to set kotsadm back up again as `kubectl-kots install` will not be sufficient to install a kotsadm configured to work properly in the Kurl cluster..",
+  "files": [
+    "pam_tools/files/pam_task_helper.rb"
+  ],
+  "input_method": "stdin",
+  "parameters": {
+    "kots_namespace": {
+      "description": "The k8s namespace we're operating in.",
+      "type": "String",
+      "default": "default"
+    },
+    "scaledown_timeout": {
+      "description": "Seconds to wait for app to scale down to 0 replica before deletion of all related resources.",
+      "type": "Integer",
+      "default": 300
+    }
+  }
+}

@@ -16,7 +16,7 @@
 #   admin-console. The next installation via `kubectl-kots install` will
 #   recreate a fresh entry for the application in the console.
 # @param delete_kotsadm
-#   If tue, then the Kotsadm admin-console will also be deleted from
+#   If true, then the Kotsadm admin-console will also be deleted from
 #   the cluster. It should be reinstalled by the next `kubectl-kots install`
 #   command.
 plan pam_tools::teardown(
@@ -45,7 +45,10 @@ plan pam_tools::teardown(
   }
 
   if $delete_kotsadm {
-    $delete_kotsadm_results = 'todo'
+    $delete_kotsadm_results = run_task('pam_tools::delete_kotsadm', $targets, {
+      'kots_namespace'    => $kots_namespace,
+      'scaledown_timeout' => $scaledown_timeout,
+    })
   } else {
     $delete_kotsadm_results = 'not-done'
   }
@@ -54,7 +57,7 @@ plan pam_tools::teardown(
     'kots_slug'                          => $kots_slug,
     'destroy_app_result_set'             => $destroy_app_results,
     'remove_app_from_console_result_set' => $remove_app_from_console_results,
-    'delete_kotsadm_result_set'             => $delete_kotsadm_results,
+    'delete_kotsadm_result_set'          => $delete_kotsadm_results,
   }
   return $results
 }
