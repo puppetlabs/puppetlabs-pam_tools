@@ -17,6 +17,7 @@ Compatible with the following cluster types:
 * [kURL], specifically [puppet-application-manager-standalone]; not yet tested with a [puppet-application-manager] HA cluster.
 * [k3s]
 * [GKE] TODO
+* [Docker Desktop] TODO
 * [KinD] TODO
 
 ## Setup
@@ -44,6 +45,7 @@ See [REFERENCE.md](./REFERENCE.md).
 [kURL]: https://kurl.sh/
 [k3s]: https://k3s.io/
 [GKE]: https://cloud.google.com/kubernetes-engine
+[Docker Desktop]: https://www.docker.com/products/docker-desktop
 [KinD]: https://kind.sigs.k8s.io/
 [puppet-application-manager]: https://kurl.sh/puppet-application-manager
 [puppet-application-manager-standalone]: https://kurl.sh/puppet-application-manager-standalone
