@@ -6,7 +6,7 @@ require_relative '../files/pam_task_helper.rb'
 class DeleteKotsadm < PAMTaskHelper
 
   def task(kots_namespace:, scaledown_timeout:, **_kwargs)
-    selector = "kots.io/kotsadm=true"
+    selector = 'kots.io/kotsadm=true'
 
     # Attempt to scale down before deletion.
     scaledown_results = scale_down(kots_namespace, selector, scaledown_timeout)

@@ -22,6 +22,7 @@
 * [`kots_install`](#kots_install): Install a Replicated application with kubectl-kots for testing. This task takes several shortcuts for configuration and security which are no
 * [`kots_upload`](#kots_upload): Upload the given source directory on the target host to the Kots admin-console, and optionally deploy it. Assumes a version of the applicatio
 * [`start_nginx_ingress`](#start_nginx_ingress): Starts an Nginx IngressController in the cluster. (https://github.com/kubernetes/ingress-nginx)
+* [`update_image`](#update_image): Patch all deployments and statefulset container images matching the given +image_name+ to the given +image_version+.
 * [`wait_for_app`](#wait_for_app): Wait for a Replicated app to deploy and any statefulsets to be ready.
 
 ### Plans
@@ -374,6 +375,26 @@ The provider implementation to use.
 Data type: `Integer`
 
 Number of secs to wait for controller to be ready.
+
+### <a name="update_image"></a>`update_image`
+
+Patch all deployments and statefulset container images matching the given +image_name+ to the given +image_version+.
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `image_name`
+
+Data type: `String`
+
+This can be the short name, or the full name for the image including registry (everything to the left of the ':' version/tag separator).
+
+##### `image_version`
+
+Data type: `String`
+
+The new version to patch the image to.
 
 ### <a name="wait_for_app"></a>`wait_for_app`
 

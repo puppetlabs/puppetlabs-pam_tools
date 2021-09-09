@@ -89,6 +89,97 @@ class PAMTaskHelper < TaskHelper
 
   # Kubectl command helpers.
   module KubectlCommands
+
+    # Abstraction containing the identifying elements of a specific deployment
+    # or statefulset container's image, along with some helper methods for
+    # patching.
+    ContainerImage = Struct.new(:namespace, :resource, :container_type, :container_name, :image, keyword_init: true) do
+
+      # @return [String] unique id.
+      def id
+        "#{namespace},#{resource},#{container_type}:#{container_name},#{image_name}"
+      end
+
+      # @return [String] everything to the left of the ':' from the image field.
+      def image_name
+        image.split(':')[0]
+      end
+
+      # @return [Boolean] true if what we're given matches the end of the full
+      # +image_name+.
+      def matches?(comparison)
+        image_name.match?(%r{#{comparison}\Z})
+      end
+
+      # @param new_version [String] the new version to patch the image to.
+      # @return [Hash] of the patch result.
+      def patch_version(new_version)
+        new_image = image.sub(%r{:.*\Z}, ":#{new_version}")
+        patch = %({"spec":{"template":{"spec":{"#{container_type}":[{"name":"#{container_name}","image":"#{new_image}"}]}}}})
+
+        patch_command = [
+          'kubectl',
+          'patch',
+          resource,
+          "--namespace=#{namespace}",
+          "--patch=#{patch}",
+        ]
+        patch_result = PAMTaskHelper.run_command(patch_command)
+
+        {
+          image: id,
+          new_version: new_version,
+          command: patch_command.join(' '),
+          patch_result: patch_result,
+        }
+      end
+    end
+
+    # @param namespace [String] the namespace to get from.
+    # @return [Array] of deployment and statefulset kind/name strings.
+    def get_deployments_and_statefulsets(namespace)
+      get_command = [
+        'kubectl',
+        'get',
+        'deployment,statefulset',
+        "--namespace=#{namespace}",
+        '--output=name',
+      ]
+      run_command(get_command).split("\n")
+    end
+
+    # @param resources [Array] of kind/name strings for deployments and statefulsets.
+    # @param namespace [String] the namespace of the containers were going to
+    # list images for.
+    # @return [Array<ContainerImage>] an array of ContainerImage structs.
+    def list_container_images(resources, namespace)
+      get_container_list = lambda do |resource, container_type|
+        list_container_images_command = [
+          'kubectl',
+          'get',
+          resource,
+          "--namespace=#{namespace}",
+          %(--output=jsonpath={range .spec.template.spec.#{container_type}[*]}{.name},{.image}{"\\n"}{end}),
+        ]
+        containers = run_command(list_container_images_command).split("\n")
+        containers.map do |c|
+          container_name, image = c.split(',')
+          ContainerImage.new(
+            namespace: namespace,
+            resource: resource,
+            container_type: container_type,
+            container_name: container_name,
+            image: image,
+          )
+        end
+      end
+
+      resources.map do |r|
+        containers = get_container_list.call(r, 'containers')
+        containers << get_container_list.call(r, 'initContainers')
+      end.flatten
+    end
+
     # @param verb [String] verb recognized by `kubectl api-resources`.
     # @return [Array] of the names of all api-resources supporting the
     #   given +verb+ operation.
@@ -216,7 +307,7 @@ class PAMTaskHelper < TaskHelper
   # @param exit_on_fail [Boolean] set false to return output if the command
   # fails rather than exiting.
   # @return [String] Combined stdout and stderr.
-  def run_command(cmd_array, exit_on_fail = true)
+  def self.run_command(cmd_array, exit_on_fail = true)
     output, status = Open3.capture2e(*cmd_array)
 
     if !status.success? && exit_on_fail
@@ -226,6 +317,10 @@ class PAMTaskHelper < TaskHelper
     end
 
     output
+  end
+
+  def run_command(cmd_array, exit_on_fail = true)
+    PAMTaskHelper.run_command(cmd_array, exit_on_fail)
   end
 
 end
