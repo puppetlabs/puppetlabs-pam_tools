@@ -180,5 +180,9 @@ describe 'PAMTaskHelper' do
         patch_result: 'patched',
       )
     end
+
+    it 'prints a #to_s' do
+      expect(image.to_s).to eq('some/thing/interesting:1.2.3 deployment.apps/foo containers:bar')
+    end
   end
 end

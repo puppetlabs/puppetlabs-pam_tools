@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative '../../tasks/update_image.rb'
+require_relative '../../tasks/list_container_images.rb'
 
-describe 'pam_tools::update_image' do
-  let(:task) { UpdateImage.new }
+describe 'pam_tools::list_container_images' do
+  let(:task) { ListContainerImages.new }
   let(:args) do
     {
-      image_name: 'foo',
-      image_version: '1.2.3',
       kots_namespace: 'default',
     }
   end
@@ -31,24 +29,14 @@ describe 'pam_tools::update_image' do
     ]
   end
 
-  it 'runs' do
+  it 'lists images' do
     expect(task).to receive(:get_deployments_and_statefulsets)
     expect(task).to receive(:list_container_images).and_return(container_images)
-    expect(PAMTaskHelper).to(
-      receive(:run_command).with(
-        include(
-          match(%r{--patch=.*"image":"some/foo:1\.2\.3"}),
-        )
-      ).and_return('patched')
-    )
 
-    expect(task.task(args)).to include(
-      image_name: 'foo',
-      image_version: '1.2.3',
-      patched: [
-        include(
-          patch_result: 'patched',
-        ),
+    expect(task.task(args)).to eq(
+      containers: [
+        'some/bar:0.0.1 deployment.apps/two containers:container2',
+        'some/foo:0.0.1 deployment.apps/one containers:container1',
       ]
     )
   end

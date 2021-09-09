@@ -100,6 +100,10 @@ class PAMTaskHelper < TaskHelper
         "#{namespace},#{resource},#{container_type}:#{container_name},#{image_name}"
       end
 
+      def to_s
+        "#{image} #{resource} #{container_type}:#{container_name}"
+      end
+
       # @return [String] everything to the left of the ':' from the image field.
       def image_name
         image.split(':')[0]
