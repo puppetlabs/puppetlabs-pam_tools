@@ -1,10 +1,10 @@
 {
   "name": "puppetlabs-pam_tools",
   "version": "0.1.0",
-  "author": "Puppet, Inc.",
+  "author": "puppetlabs",
   "summary": "Installation and management tasks and plans for Puppet Application Manager.",
   "license": "Apache-2.0",
-  "source": "",
+  "source": "https://github.com/puppetlabs/puppetlabs-pam_tools",
   "project_page": "https://github.com/puppetlabs/puppetlabs-pam_tools",
   "dependencies": [
     {

@@ -7,6 +7,9 @@ Bolt module providing tasks and plans for installing and managing Puppet Applica
 1. [Setup](#setup)
 1. [Usage](#usage)
 1. [Reference](#reference)
+1. [Development](#development)
+  * [Testing](#testing)
+  * [Changelog](#changelog)
 
 ## Description
 
@@ -41,6 +44,23 @@ tasks that involve different types, classes, and functions working in tandem.
 
 See [REFERENCE.md](./REFERENCE.md).
 
+## Development
+
+### Testing
+
+```
+bundle exec rake validate check lint rubocop spec
+```
+
+### Changelog
+
+To update the [CHANGELOG](./CHANGELOG.md), generate a [Github token], and run:
+
+```
+export CHANGELOG_GITHUB_TOKEN=<the-token>
+bundle exec changelog
+```
+
 [PAM]: https://github.com/puppetlabs/puppet-application-manager
 [kURL]: https://kurl.sh/
 [k3s]: https://k3s.io/
@@ -49,4 +69,4 @@ See [REFERENCE.md](./REFERENCE.md).
 [KinD]: https://kind.sigs.k8s.io/
 [puppet-application-manager]: https://kurl.sh/puppet-application-manager
 [puppet-application-manager-standalone]: https://kurl.sh/puppet-application-manager-standalone
-
+[Github token]: https://github.com/settings/tokens
