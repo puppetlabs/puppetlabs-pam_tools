@@ -6,10 +6,10 @@
 
 ### Functions
 
-* [`pam_tools::check_for_file`](#pam_toolscheck_for_file): Raises an error if the given file path does not exist or cannot be read.  If path does not exist or is not readable.
+* [`pam_tools::check_for_file`](#pam_toolscheck_for_file): Raises an error if the given file path does not exist or cannot be read.
 * [`pam_tools::generate_random_password`](#pam_toolsgenerate_random_password): Generate a random password of the given length using Ruby's SecureRandom library.
-* [`pam_tools::get_kots_app`](#pam_toolsget_kots_app): Return the application name based on kots_slug and entitlement from the given license file.  Will raise an error if appSlug cannot be found i
-* [`pam_tools::get_kots_slug`](#pam_toolsget_kots_slug): Return the appSlug from a given license file.  Will raise an error if appSlug cannot be found.
+* [`pam_tools::get_kots_app`](#pam_toolsget_kots_app): Return the application name based on kots_slug and entitlement from the given license file.
+* [`pam_tools::get_kots_slug`](#pam_toolsget_kots_slug): Return the appSlug from a given license file.
 
 ### Tasks
 
@@ -39,13 +39,9 @@ Type: Puppet Language
 
 Raises an error if the given file path does not exist or cannot be read.
 
-If path does not exist or is not readable.
-
 #### `pam_tools::check_for_file(String $filetype, Optional[String] $path = undef, Boolean $fail_empty_path = true)`
 
 Raises an error if the given file path does not exist or cannot be read.
-
-If path does not exist or is not readable.
 
 Returns: `Any` The +path+ if found, or undef if no path given.
 
@@ -92,16 +88,16 @@ Type: Puppet Language
 Return the application name based on kots_slug and entitlement from the given
 license file.
 
-Will raise an error if appSlug cannot be found in the license.
-
 #### `pam_tools::get_kots_app(String $license)`
 
 Return the application name based on kots_slug and entitlement from the given
 license file.
 
-Will raise an error if appSlug cannot be found in the license.
-
 Returns: `Any` The associated application name (which may differ from kots_slug).
+
+Raises:
+
+* `PuppetError` If appSlug cannot be found in the license.
 
 ##### `license`
 
@@ -115,15 +111,15 @@ Type: Puppet Language
 
 Return the appSlug from a given license file.
 
-Will raise an error if appSlug cannot be found.
-
 #### `pam_tools::get_kots_slug(String $license)`
 
 Return the appSlug from a given license file.
 
-Will raise an error if appSlug cannot be found.
-
 Returns: `Any` The appSlug string from the parsed license spec.
+
+Raises:
+
+* `PuppetError` If appSlug cannot be found.
 
 ##### `license`
 
