@@ -1,0 +1,14 @@
+{
+  "description": "Utility for inspecting all the image references from deployment and statefulset container and initContainers in the given namespace.",
+  "files": [
+    "pam_tools/files/pam_task_helper.rb"
+  ],
+  "input_method": "stdin",
+  "parameters": {
+    "kots_namespace": {
+      "description": "The k8s namespace we're operating in.",
+      "type": "String",
+      "default": "default"
+    }
+  }
+}

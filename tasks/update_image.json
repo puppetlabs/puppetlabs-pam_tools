@@ -1,0 +1,22 @@
+{
+  "description": "Patch all deployments and statefulset container images matching the given +image_name+ to the given +image_version+.",
+  "files": [
+    "pam_tools/files/pam_task_helper.rb"
+  ],
+  "input_method": "stdin",
+  "parameters": {
+    "image_name": {
+      "description": "This can be the short name, or the full name for the image including registry (everything to the left of the ':' version/tag separator).",
+      "type": "String"
+    },
+    "image_version": {
+      "description": "The new version to patch the image to.",
+      "type": "String"
+    },
+    "kots_namespace": {
+      "description": "The k8s namespace we're operating in.",
+      "type": "String",
+      "default": "default"
+    }
+  }
+}

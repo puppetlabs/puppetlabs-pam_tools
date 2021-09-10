@@ -12,6 +12,8 @@
 # detects that the application has already been installed, it will skip this
 # step and simply wait for the application to be ready.
 #
+# @param targets
+#   The hosts to operate on.
 # @param license_file
 #   Path to the application license file.
 # @param password

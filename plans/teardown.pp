@@ -4,6 +4,8 @@
 # By default, just deletes the given app's resources, allowing
 # for a fresh deployment.
 #
+# @param targets
+#   The hosts to operate on.
 # @param kots_slug
 #   The slug label of the Replicated application to delete.
 # @param kots_namespace

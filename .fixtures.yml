@@ -4,10 +4,11 @@
 fixtures:
   repositories:
     bolt:
-      repo: 'git@github.com:puppetlabs/bolt.git'
+      repo: 'https://github.com/puppetlabs/bolt.git'
       ref: 'origin/main'
       target: 'spec/fixtures'
   symlinks:
+    pam_tools: "#{source_dir}"
     file: "#{source_dir}/spec/fixtures/bolt/bolt-modules/file"
 #    boltlib: "#{source_dir}/spec/fixtures/bolt/bolt-modules/boltlib"
 #    out: "#{source_dir}/spec/fixtures/bolt/bolt-modules/out"
