@@ -1,5 +1,7 @@
 # Raises an error if the given file path does not exist or cannot be read.
 #
+# If path does not exist or is not readable.
+#
 # @param filetype
 #   Type of file to display in error messages.
 # @param path
@@ -8,8 +10,6 @@
 #   If true, fail if no +path+ parameter is given.
 # @return
 #   The +path+ if found, or undef if no path given.
-# @error
-#   If path does not exist or is not readable.
 function pam_tools::check_for_file(
   String $filetype,
   Optional[String] $path = undef,

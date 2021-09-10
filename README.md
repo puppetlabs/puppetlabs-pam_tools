@@ -44,6 +44,8 @@ tasks that involve different types, classes, and functions working in tandem.
 
 See [REFERENCE.md](./REFERENCE.md).
 
+(To regenerate the reference docs, run: `bundle exec rake strings:generate:reference`)
+
 ## Development
 
 ### Testing

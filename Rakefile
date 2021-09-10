@@ -86,3 +86,12 @@ EOM
   end
 end
 
+desc 'Check whether REFERENCES.md needs to be regenerated.'
+task :check_references do
+  sh('bundle exec rake strings:generate:reference')
+  sh('git diff --no-patch --exit-code -- REFERENCE.md') do |ok, res|
+    if !ok
+      raise("!! REFERENCES.md needs to be updated. Please run `bundle exec rake strings:generate:reference` and check in the changes.")
+    end
+  end
+end

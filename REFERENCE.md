@@ -6,10 +6,10 @@
 
 ### Functions
 
-* [`pam_tools::check_for_file`](#pam_toolscheck_for_file): Raises an error if the given file path does not exist or cannot be read.
+* [`pam_tools::check_for_file`](#pam_toolscheck_for_file): Raises an error if the given file path does not exist or cannot be read.  If path does not exist or is not readable.
 * [`pam_tools::generate_random_password`](#pam_toolsgenerate_random_password): Generate a random password of the given length using Ruby's SecureRandom library.
-* [`pam_tools::get_kots_app`](#pam_toolsget_kots_app): Return the application name based on kots_slug and entitlement from the given license file.
-* [`pam_tools::get_kots_slug`](#pam_toolsget_kots_slug): Return the appSlug from a given license file.
+* [`pam_tools::get_kots_app`](#pam_toolsget_kots_app): Return the application name based on kots_slug and entitlement from the given license file.  Will raise an error if appSlug cannot be found i
+* [`pam_tools::get_kots_slug`](#pam_toolsget_kots_slug): Return the appSlug from a given license file.  Will raise an error if appSlug cannot be found.
 
 ### Tasks
 
@@ -21,6 +21,7 @@
 * [`kots_download`](#kots_download): Downloads the currently installed source of a given Kots application from the admin console to the given directory.
 * [`kots_install`](#kots_install): Install a Replicated application with kubectl-kots for testing. This task takes several shortcuts for configuration and security which are no
 * [`kots_upload`](#kots_upload): Upload the given source directory on the target host to the Kots admin-console, and optionally deploy it. Assumes a version of the applicatio
+* [`list_container_images`](#list_container_images): Utility for inspecting all the image references from deployment and statefulset container and initContainers in the given namespace.
 * [`start_nginx_ingress`](#start_nginx_ingress): Starts an Nginx IngressController in the cluster. (https://github.com/kubernetes/ingress-nginx)
 * [`update_image`](#update_image): Patch all deployments and statefulset container images matching the given +image_name+ to the given +image_version+.
 * [`wait_for_app`](#wait_for_app): Wait for a Replicated app to deploy and any statefulsets to be ready.
@@ -38,9 +39,13 @@ Type: Puppet Language
 
 Raises an error if the given file path does not exist or cannot be read.
 
+If path does not exist or is not readable.
+
 #### `pam_tools::check_for_file(String $filetype, Optional[String] $path = undef, Boolean $fail_empty_path = true)`
 
 Raises an error if the given file path does not exist or cannot be read.
+
+If path does not exist or is not readable.
 
 Returns: `Any` The +path+ if found, or undef if no path given.
 
@@ -72,13 +77,13 @@ Generate a random password of the given length using Ruby's SecureRandom library
 
 Generate a random password of the given length using Ruby's SecureRandom library.
 
-Returns: `String`
+Returns: `String` The password string.
 
 ##### `length`
 
 Data type: `Integer`
 
-
+The number of characters to generate.
 
 ### <a name="pam_toolsget_kots_app"></a>`pam_tools::get_kots_app`
 
@@ -87,10 +92,14 @@ Type: Puppet Language
 Return the application name based on kots_slug and entitlement from the given
 license file.
 
+Will raise an error if appSlug cannot be found in the license.
+
 #### `pam_tools::get_kots_app(String $license)`
 
 Return the application name based on kots_slug and entitlement from the given
 license file.
+
+Will raise an error if appSlug cannot be found in the license.
 
 Returns: `Any` The associated application name (which may differ from kots_slug).
 
@@ -106,9 +115,13 @@ Type: Puppet Language
 
 Return the appSlug from a given license file.
 
+Will raise an error if appSlug cannot be found.
+
 #### `pam_tools::get_kots_slug(String $license)`
 
 Return the appSlug from a given license file.
+
+Will raise an error if appSlug cannot be found.
 
 Returns: `Any` The appSlug string from the parsed license spec.
 
@@ -350,6 +363,20 @@ Data type: `Boolean`
 
 Whether to skip preflight checks after uploading.
 
+### <a name="list_container_images"></a>`list_container_images`
+
+Utility for inspecting all the image references from deployment and statefulset container and initContainers in the given namespace.
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `kots_namespace`
+
+Data type: `String`
+
+The k8s namespace we're operating in.
+
 ### <a name="start_nginx_ingress"></a>`start_nginx_ingress`
 
 Starts an Nginx IngressController in the cluster. (https://github.com/kubernetes/ingress-nginx)
@@ -395,6 +422,12 @@ This can be the short name, or the full name for the image including registry (e
 Data type: `String`
 
 The new version to patch the image to.
+
+##### `kots_namespace`
+
+Data type: `String`
+
+The k8s namespace we're operating in.
 
 ### <a name="wait_for_app"></a>`wait_for_app`
 
@@ -462,13 +495,19 @@ step and simply wait for the application to be ready.
 
 The following parameters are available in the `pam_tools::install_published` plan:
 
+* [`targets`](#targets)
 * [`license_file`](#license_file)
 * [`password`](#password)
 * [`config_file`](#config_file)
 * [`airgap_bundle`](#airgap_bundle)
 * [`wait_for_app`](#wait_for_app)
 * [`system_ready_wait_minutes`](#system_ready_wait_minutes)
-* [`targets`](#targets)
+
+##### <a name="targets"></a>`targets`
+
+Data type: `TargetSpec`
+
+The hosts to operate on.
 
 ##### <a name="license_file"></a>`license_file`
 
@@ -520,12 +559,6 @@ node restart.
 
 Default value: `5`
 
-##### <a name="targets"></a>`targets`
-
-Data type: `TargetSpec`
-
-
-
 ### <a name="pam_toolsteardown"></a>`pam_tools::teardown`
 
 In successive tiers, teardown the application, it's admin-console
@@ -538,12 +571,18 @@ for a fresh deployment.
 
 The following parameters are available in the `pam_tools::teardown` plan:
 
+* [`targets`](#targets)
 * [`kots_slug`](#kots_slug)
 * [`kots_namespace`](#kots_namespace)
 * [`scaledown_timeout`](#scaledown_timeout)
 * [`remove_app_from_console`](#remove_app_from_console)
 * [`delete_kotsadm`](#delete_kotsadm)
-* [`targets`](#targets)
+
+##### <a name="targets"></a>`targets`
+
+Data type: `TargetSpec`
+
+The hosts to operate on.
 
 ##### <a name="kots_slug"></a>`kots_slug`
 
@@ -587,10 +626,4 @@ the cluster. It should be reinstalled by the next `kubectl-kots install`
 command.
 
 Default value: ``false``
-
-##### <a name="targets"></a>`targets`
-
-Data type: `TargetSpec`
-
-
 
