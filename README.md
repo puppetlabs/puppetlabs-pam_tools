@@ -6,6 +6,7 @@ Bolt module providing tasks and plans for installing and managing Puppet Applica
 1. [Description](#description)
 1. [Setup](#setup)
 1. [Usage](#usage)
+  * [kots_install](#kots_install)
 1. [Reference](#reference)
 1. [Development](#development)
   * [Testing](#testing)
@@ -34,11 +35,15 @@ bundle exec bolt module install
 
 ## Usage
 
-Include usage examples for common use cases in the **Usage** section. Show your
-users how to use your module to solve problems, and be sure to include code
-examples. Include three to five examples of the most important or common tasks a
-user can accomplish with your module. Show users how to accomplish more complex
-tasks that involve different types, classes, and functions working in tandem.
+### kots_install
+
+Basic configuration for auto install is generated automatically, but you can
+pass a YAML config file as well.
+(see one of the ${KOTS\_APP-config.yaml examples from
+[holodeck-manifests/dev](https://github.com/puppetlabs/holodeck-manifests/tree/main/dev))
+
+Atm, cd4pe fits into the current kurl vm's 8GB of memory, and connect has
+config generated which configures down to 8GB for dev.
 
 ## Reference
 

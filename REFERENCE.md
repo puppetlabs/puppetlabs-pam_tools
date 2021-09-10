@@ -18,7 +18,7 @@
 * [`delete_kotsadm`](#delete_kotsadm): Delete the Kots admin-console applicaiton from the cluster. Note, if you use this on a Kurl host, you will need to re-run the Kurl installer 
 * [`destroy_nginx_ingress`](#destroy_nginx_ingress): Tear down the Nginx IngressController.
 * [`get_kots_app_status`](#get_kots_app_status): Return the state of a given Kots application, or not-installed. Will also return not-installed if kots itself is not installed.
-* [`kots_download`](#kots_download): Downloads the currently installed source of a given Kots application from the admin console to the given directory.
+* [`kots_download`](#kots_download): Downloads the currently installed source of a given Kots application from the admin console to the given directory. This task is a wrapper ro
 * [`kots_install`](#kots_install): Install a Replicated application with kubectl-kots for testing. This task takes several shortcuts for configuration and security which are no
 * [`kots_upload`](#kots_upload): Upload the given source directory on the target host to the Kots admin-console, and optionally deploy it. Assumes a version of the applicatio
 * [`list_container_images`](#list_container_images): Utility for inspecting all the image references from deployment and statefulset container and initContainers in the given namespace.
@@ -235,7 +235,7 @@ Return json output, including the full hash of all Kots applicaiton statuses.
 
 ### <a name="kots_download"></a>`kots_download`
 
-Downloads the currently installed source of a given Kots application from the admin console to the given directory.
+Downloads the currently installed source of a given Kots application from the admin console to the given directory. This task is a wrapper round `kubectl-kots download`.
 
 **Supports noop?** false
 
@@ -323,7 +323,7 @@ Path on the target of an airgap bundle to install instead of using online instal
 
 ### <a name="kots_upload"></a>`kots_upload`
 
-Upload the given source directory on the target host to the Kots admin-console, and optionally deploy it. Assumes a version of the application is already installed.
+Upload the given source directory on the target host to the Kots admin-console, and optionally deploy it. Assumes a version of the application is already installed. This task is a wrapper around `kubectl-kots upload`.
 
 **Supports noop?** false
 
