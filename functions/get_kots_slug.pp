@@ -1,11 +1,11 @@
 # Return the appSlug from a given license file.
 #
-# Will raise an error if appSlug cannot be found.
-#
 # @param license
 #   A String of the license file content.
 # @return
 #   The appSlug string from the parsed license spec.
+# @raise PuppetError
+#   If appSlug cannot be found.
 function pam_tools::get_kots_slug(
   String $license,
 ) {

@@ -6,10 +6,10 @@
 
 ### Functions
 
-* [`pam_tools::check_for_file`](#pam_toolscheck_for_file): Raises an error if the given file path does not exist or cannot be read.  If path does not exist or is not readable.
+* [`pam_tools::check_for_file`](#pam_toolscheck_for_file): Raises an error if the given file path does not exist or cannot be read.
 * [`pam_tools::generate_random_password`](#pam_toolsgenerate_random_password): Generate a random password of the given length using Ruby's SecureRandom library.
-* [`pam_tools::get_kots_app`](#pam_toolsget_kots_app): Return the application name based on kots_slug and entitlement from the given license file.  Will raise an error if appSlug cannot be found i
-* [`pam_tools::get_kots_slug`](#pam_toolsget_kots_slug): Return the appSlug from a given license file.  Will raise an error if appSlug cannot be found.
+* [`pam_tools::get_kots_app`](#pam_toolsget_kots_app): Return the application name based on kots_slug and entitlement from the given license file.
+* [`pam_tools::get_kots_slug`](#pam_toolsget_kots_slug): Return the appSlug from a given license file.
 
 ### Tasks
 
@@ -18,7 +18,7 @@
 * [`delete_kotsadm`](#delete_kotsadm): Delete the Kots admin-console applicaiton from the cluster. Note, if you use this on a Kurl host, you will need to re-run the Kurl installer 
 * [`destroy_nginx_ingress`](#destroy_nginx_ingress): Tear down the Nginx IngressController.
 * [`get_kots_app_status`](#get_kots_app_status): Return the state of a given Kots application, or not-installed. Will also return not-installed if kots itself is not installed.
-* [`kots_download`](#kots_download): Downloads the currently installed source of a given Kots application from the admin console to the given directory.
+* [`kots_download`](#kots_download): Downloads the currently installed source of a given Kots application from the admin console to the given directory. This task is a wrapper ro
 * [`kots_install`](#kots_install): Install a Replicated application with kubectl-kots for testing. This task takes several shortcuts for configuration and security which are no
 * [`kots_upload`](#kots_upload): Upload the given source directory on the target host to the Kots admin-console, and optionally deploy it. Assumes a version of the applicatio
 * [`list_container_images`](#list_container_images): Utility for inspecting all the image references from deployment and statefulset container and initContainers in the given namespace.
@@ -39,13 +39,9 @@ Type: Puppet Language
 
 Raises an error if the given file path does not exist or cannot be read.
 
-If path does not exist or is not readable.
-
 #### `pam_tools::check_for_file(String $filetype, Optional[String] $path = undef, Boolean $fail_empty_path = true)`
 
 Raises an error if the given file path does not exist or cannot be read.
-
-If path does not exist or is not readable.
 
 Returns: `Any` The +path+ if found, or undef if no path given.
 
@@ -92,16 +88,16 @@ Type: Puppet Language
 Return the application name based on kots_slug and entitlement from the given
 license file.
 
-Will raise an error if appSlug cannot be found in the license.
-
 #### `pam_tools::get_kots_app(String $license)`
 
 Return the application name based on kots_slug and entitlement from the given
 license file.
 
-Will raise an error if appSlug cannot be found in the license.
-
 Returns: `Any` The associated application name (which may differ from kots_slug).
+
+Raises:
+
+* `PuppetError` If appSlug cannot be found in the license.
 
 ##### `license`
 
@@ -115,15 +111,15 @@ Type: Puppet Language
 
 Return the appSlug from a given license file.
 
-Will raise an error if appSlug cannot be found.
-
 #### `pam_tools::get_kots_slug(String $license)`
 
 Return the appSlug from a given license file.
 
-Will raise an error if appSlug cannot be found.
-
 Returns: `Any` The appSlug string from the parsed license spec.
+
+Raises:
+
+* `PuppetError` If appSlug cannot be found.
 
 ##### `license`
 
@@ -239,7 +235,7 @@ Return json output, including the full hash of all Kots applicaiton statuses.
 
 ### <a name="kots_download"></a>`kots_download`
 
-Downloads the currently installed source of a given Kots application from the admin console to the given directory.
+Downloads the currently installed source of a given Kots application from the admin console to the given directory. This task is a wrapper round `kubectl-kots download`.
 
 **Supports noop?** false
 
@@ -327,7 +323,7 @@ Path on the target of an airgap bundle to install instead of using online instal
 
 ### <a name="kots_upload"></a>`kots_upload`
 
-Upload the given source directory on the target host to the Kots admin-console, and optionally deploy it. Assumes a version of the application is already installed.
+Upload the given source directory on the target host to the Kots admin-console, and optionally deploy it. Assumes a version of the application is already installed. This task is a wrapper around `kubectl-kots upload`.
 
 **Supports noop?** false
 

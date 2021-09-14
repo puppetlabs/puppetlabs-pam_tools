@@ -1,7 +1,5 @@
 # Raises an error if the given file path does not exist or cannot be read.
 #
-# If path does not exist or is not readable.
-#
 # @param filetype
 #   Type of file to display in error messages.
 # @param path

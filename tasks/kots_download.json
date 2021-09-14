@@ -1,5 +1,5 @@
 {
-  "description": "Downloads the currently installed source of a given Kots application from the admin console to the given directory.",
+  "description": "Downloads the currently installed source of a given Kots application from the admin console to the given directory. This task is a wrapper round `kubectl-kots download`.",
   "files": [
     "pam_tools/files/pam_task_helper.rb"
   ],

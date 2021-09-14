@@ -1,12 +1,12 @@
 # Return the application name based on kots_slug and entitlement from the given
 # license file.
 #
-# Will raise an error if appSlug cannot be found in the license.
-#
 # @param license
 #   A String of the license file content.
 # @return
 #   The associated application name (which may differ from kots_slug).
+# @raise PuppetError
+#   If appSlug cannot be found in the license.
 function pam_tools::get_kots_app(
   String $license,
 ) {

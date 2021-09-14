@@ -1,5 +1,5 @@
 {
-  "description": "Upload the given source directory on the target host to the Kots admin-console, and optionally deploy it. Assumes a version of the application is already installed.",
+  "description": "Upload the given source directory on the target host to the Kots admin-console, and optionally deploy it. Assumes a version of the application is already installed. This task is a wrapper around `kubectl-kots upload`.",
   "files": [
     "pam_tools/files/pam_task_helper.rb"
   ],
