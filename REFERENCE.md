@@ -18,6 +18,7 @@
 * [`delete_kotsadm`](#delete_kotsadm): Delete the Kots admin-console applicaiton from the cluster. Note, if you use this on a Kurl host, you will need to re-run the Kurl installer 
 * [`destroy_nginx_ingress`](#destroy_nginx_ingress): Tear down the Nginx IngressController.
 * [`get_kots_app_status`](#get_kots_app_status): Return the state of a given Kots application, or not-installed. Will also return not-installed if kots itself is not installed.
+* [`helm_install_chart`](#helm_install_chart): Install or upgrade a helm chart.
 * [`kots_download`](#kots_download): Downloads the currently installed source of a given Kots application from the admin console to the given directory. This task is a wrapper ro
 * [`kots_install`](#kots_install): Install a Replicated application with kubectl-kots for testing. This task takes several shortcuts for configuration and security which are no
 * [`kots_upload`](#kots_upload): Upload the given source directory on the target host to the Kots admin-console, and optionally deploy it. Assumes a version of the applicatio
@@ -232,6 +233,50 @@ The k8s namespace the application is installed in.
 Data type: `Boolean`
 
 Return json output, including the full hash of all Kots applicaiton statuses.
+
+### <a name="helm_install_chart"></a>`helm_install_chart`
+
+Install or upgrade a helm chart.
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `chart`
+
+Data type: `String`
+
+The chart to install. This could be a reference to a chart in a helm repository, or a path to a chart archive or directory.
+
+##### `version`
+
+Data type: `Optional[String]`
+
+If +chart+ is a reference, this is the version to install. If not set, the latest version is installed.
+
+##### `release`
+
+Data type: `String`
+
+The name of the installed instance of the chart.
+
+##### `values`
+
+Data type: `Optional[String]`
+
+YAML override values for chart settings.
+
+##### `namespace`
+
+Data type: `String`
+
+k8s namespace we're installing into.
+
+##### `kubeconfig`
+
+Data type: `String`
+
+The path to the k8s config file needed to access the cluster we're installing into.
 
 ### <a name="kots_download"></a>`kots_download`
 
