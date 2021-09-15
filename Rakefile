@@ -86,6 +86,10 @@ EOM
   end
 end
 
+desc 'Run linters and rspec'
+task unit_test: %i[validate lint check rubocop check_references spec]
+task default: %i[unit_test]
+
 desc 'Check whether REFERENCES.md needs to be regenerated.'
 task :check_references do
   sh('bundle exec rake strings:generate:reference')
