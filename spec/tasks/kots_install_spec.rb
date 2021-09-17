@@ -81,8 +81,6 @@ describe 'pam_tools::kots_install' do
   end
 
   context '#task' do
-    include_context('with_tmpdir')
-
     it 'installs' do
       args = {
         license_content: license('connect'),
@@ -92,31 +90,34 @@ describe 'pam_tools::kots_install' do
         kots_wait_duration: '5m',
       }
 
-      expect(Dir).to receive(:mktmpdir).with('kots-install').and_return(tmpdir)
       expect(task).to receive(:run_command).with(
-        [
-          'kubectl-kots',
-          'install',
-          'puppet-application-manager/stable',
-          '--namespace=default',
-          '--shared-password=puppet',
-          '--port-forward=false',
-          "--license-file=#{tmpdir}/license.yaml",
-          "--config-values=#{tmpdir}/config.yaml",
-          '--wait-duration=5m',
-        ]
+        match(
+          [
+            'kubectl-kots',
+            'install',
+            'puppet-application-manager/stable',
+            '--namespace=default',
+            '--shared-password=puppet',
+            '--port-forward=false',
+            %r{--license-file=#{Dir.tmpdir}/kots-install.*/license\.yaml},
+            %r{--config-values=#{Dir.tmpdir}/kots-install.*/config\.yaml},
+            '--wait-duration=5m',
+          ]
+        )
       ).and_return('installed')
 
       expect(task.task(args)).to include(
         appname: 'connect',
         kots_slug: 'cd4pe',
       )
+
+      # Validate that we're not leaving behind tmpdirs with value-overrides.yaml
+      # since these could include secrets.
+      expect(Dir.glob("#{Dir.tmpdir}/kots-install*")).to be_empty
     end
   end
 
   context '#task with optional args' do
-    include_context('with_tmpdir')
-
     it 'installs' do
       config_content = { 'apiVersion' => 'kots.io/v1beta1', 'kind' => 'ConfigValues' }
       args = {
@@ -130,20 +131,23 @@ describe 'pam_tools::kots_install' do
         airgap_bundle: './bundle.airgap',
       }
 
-      expect(Dir).to receive(:mktmpdir).with('kots-install').and_return(tmpdir)
+      allow(File).to receive(:write).and_call_original
+      expect(File).to receive(:write).with(%r{#{Dir.tmpdir}/kots-install.*/config.yaml}, config_content.to_yaml)
       expect(task).to receive(:run_command).with(
-        [
-          'kubectl-kots',
-          'install',
-          'puppet-application-manager/stable',
-          '--namespace=default',
-          '--shared-password=puppet',
-          '--port-forward=false',
-          "--license-file=#{tmpdir}/license.yaml",
-          "--config-values=#{tmpdir}/config.yaml",
-          '--wait-duration=5m',
-          '--airgap-bundle=./bundle.airgap',
-        ]
+        match(
+          [
+            'kubectl-kots',
+            'install',
+            'puppet-application-manager/stable',
+            '--namespace=default',
+            '--shared-password=puppet',
+            '--port-forward=false',
+            %r{--license-file=#{Dir.tmpdir}/kots-install.*/license\.yaml},
+            %r{--config-values=#{Dir.tmpdir}/kots-install.*/config\.yaml},
+            '--wait-duration=5m',
+            '--airgap-bundle=./bundle.airgap',
+          ]
+        )
       ).and_return('installed')
 
       expect(task.task(args)).to include(
@@ -151,25 +155,7 @@ describe 'pam_tools::kots_install' do
         kots_slug: 'cd4pe',
       )
 
-      config = YAML.safe_load(File.read(File.join(tmpdir, 'config.yaml')))
-      expect(config).to eq(config_content)
-    end
-  end
-
-  context '.run' do
-    it 'installs' do
-      json_input = '{"foo":"bar"}'
-      params_hash = { foo: 'bar' }
-      output_hash = { thing: 'done' }
-
-      runner = instance_double('PAMTaskHelper')
-      expect($stdin).to receive(:read).and_return(json_input)
-      expect(runner).to receive(:task).with(params_hash).and_return(output_hash)
-      expect(KotsInstall).to receive(:new).and_return(runner)
-
-      expect { KotsInstall.run }.to(
-        output(output_hash.to_json.to_s).to_stdout
-      )
+      expect(Dir.glob("#{Dir.tmpdir}/kots-install*")).to be_empty
     end
   end
 end
