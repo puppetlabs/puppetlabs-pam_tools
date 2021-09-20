@@ -84,4 +84,32 @@ describe 'pam_tools::install_published' do
     result = run_plan('pam_tools::install_published', params)
     expect(result.ok?).to eq(true)
   end
+
+  context 'with an airgap bundle' do
+    let(:airgap_bundle) { "#{tmpdir}/app.bundle" }
+    let(:params) do
+      {
+        'targets'       => targets,
+        'license_file'  => license_file,
+        'airgap_bundle' => airgap_bundle,
+        'password'      => 'puppet',
+      }
+    end
+
+    before(:each) do
+      File.write(airgap_bundle, 'nonsense')
+    end
+
+    it 'runs without waiting' do
+      params['wait_for_app'] = false
+
+      expect_task('pam_tools::get_kots_app_status').always_return({ '_output' => 'not-installed' })
+      expect_upload(airgap_bundle).with_destination('/tmp/connect.airgap').with_targets(targets)
+      expect_task('pam_tools::kots_install')
+      expect_task('pam_tools::wait_for_app').not_be_called
+
+      result = run_plan('pam_tools::install_published', params)
+      expect(result.ok?).to eq(true)
+    end
+  end
 end
