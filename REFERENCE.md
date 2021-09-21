@@ -8,6 +8,7 @@
 
 * [`pam_tools::check_for_file`](#pam_toolscheck_for_file): Raises an error if the given file path does not exist or cannot be read.
 * [`pam_tools::generate_random_password`](#pam_toolsgenerate_random_password): Generate a random password of the given length using Ruby's SecureRandom library.
+* [`pam_tools::generate_randomized_name`](#pam_toolsgenerate_randomized_name): Given a stem and optional character count, return a name with a random extension. Useful for generating randomized temp directories, for exam
 * [`pam_tools::get_kots_app`](#pam_toolsget_kots_app): Return the application name based on kots_slug and entitlement from the given license file.
 * [`pam_tools::get_kots_slug`](#pam_toolsget_kots_slug): Return the appSlug from a given license file.
 
@@ -81,6 +82,56 @@ Returns: `String` The password string.
 Data type: `Integer`
 
 The number of characters to generate.
+
+### <a name="pam_toolsgenerate_randomized_name"></a>`pam_tools::generate_randomized_name`
+
+Type: Puppet Language
+
+Given a stem and optional character count, return a name with a random extension.
+Useful for generating randomized temp directories, for example.
+
+Seeding is not tied to host(s), and should be random for each call.
+
+#### Examples
+
+##### 
+
+```puppet
+$r = pam_tools::generate_randomized_name('test', 12)
+notice($r)
+# Notice: Scope(Class[main]): test.x5gghIjk32ld
+```
+
+#### `pam_tools::generate_randomized_name(String $stem, Integer $count = 10)`
+
+Given a stem and optional character count, return a name with a random extension.
+Useful for generating randomized temp directories, for example.
+
+Seeding is not tied to host(s), and should be random for each call.
+
+Returns: `Any`
+
+##### Examples
+
+###### 
+
+```puppet
+$r = pam_tools::generate_randomized_name('test', 12)
+notice($r)
+# Notice: Scope(Class[main]): test.x5gghIjk32ld
+```
+
+##### `stem`
+
+Data type: `String`
+
+The start of the string.
+
+##### `count`
+
+Data type: `Integer`
+
+Number of randomized characters to add as a suffix.
 
 ### <a name="pam_toolsget_kots_app"></a>`pam_tools::get_kots_app`
 
