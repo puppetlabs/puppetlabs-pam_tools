@@ -48,6 +48,27 @@ describe 'PAMTaskHelper' do
     end
   end
 
+  context '.run' do
+    class TestTask < PAMTaskHelper
+      def task(**kwargs)
+        { inputs: kwargs }
+      end
+    end
+
+    let(:output_hash) { { thing: 'done' } }
+
+    it 'installs' do
+      json_input = '{"foo":"bar"}'
+      output_hash = { inputs: { 'foo' => 'bar' } }
+
+      expect($stdin).to receive(:read).and_return(json_input)
+
+      expect { TestTask.run }.to(
+        output(output_hash.to_json.to_s).to_stdout
+      )
+    end
+  end
+
   context '#list_container_images' do
     let(:deployment) { 'deployment.apps/thing1' }
     let(:statefulset) { 'statefulset.apps/stateful-thing2' }

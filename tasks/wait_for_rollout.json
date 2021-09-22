@@ -1,0 +1,20 @@
+{
+  "description": "Wait for rollout of a set of Deployments and Statefulsets based on a k8s selector.",
+  "input_method": "environment",
+  "parameters": {
+    "selector": {
+      "description": "A k8s selector to constrain resources.",
+      "type": "String"
+    },
+    "namespace": {
+      "description": "The k8s namespace to operate in",
+      "type": "String",
+      "default": "default"
+    },
+    "timeout": {
+      "description": "Number of seconds to wait for Deployment and StatefulSet rollouts to complete.",
+      "type": "Pattern[/[0-9]+s/]",
+      "default": "300s"
+    }
+  }
+}

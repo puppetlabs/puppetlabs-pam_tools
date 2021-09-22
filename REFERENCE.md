@@ -8,6 +8,7 @@
 
 * [`pam_tools::check_for_file`](#pam_toolscheck_for_file): Raises an error if the given file path does not exist or cannot be read.
 * [`pam_tools::generate_random_password`](#pam_toolsgenerate_random_password): Generate a random password of the given length using Ruby's SecureRandom library.
+* [`pam_tools::generate_randomized_name`](#pam_toolsgenerate_randomized_name): Given a stem and optional character count, return a name with a random extension. Useful for generating randomized temp directories, for exam
 * [`pam_tools::get_kots_app`](#pam_toolsget_kots_app): Return the application name based on kots_slug and entitlement from the given license file.
 * [`pam_tools::get_kots_slug`](#pam_toolsget_kots_slug): Return the appSlug from a given license file.
 
@@ -18,6 +19,7 @@
 * [`delete_kotsadm`](#delete_kotsadm): Delete the Kots admin-console applicaiton from the cluster. Note, if you use this on a Kurl host, you will need to re-run the Kurl installer 
 * [`destroy_nginx_ingress`](#destroy_nginx_ingress): Tear down the Nginx IngressController.
 * [`get_kots_app_status`](#get_kots_app_status): Return the state of a given Kots application, or not-installed. Will also return not-installed if kots itself is not installed.
+* [`helm_install_chart`](#helm_install_chart): Install or upgrade a helm chart.
 * [`kots_download`](#kots_download): Downloads the currently installed source of a given Kots application from the admin console to the given directory. This task is a wrapper ro
 * [`kots_install`](#kots_install): Install a Replicated application with kubectl-kots for testing. This task takes several shortcuts for configuration and security which are no
 * [`kots_upload`](#kots_upload): Upload the given source directory on the target host to the Kots admin-console, and optionally deploy it. Assumes a version of the applicatio
@@ -25,6 +27,7 @@
 * [`start_nginx_ingress`](#start_nginx_ingress): Starts an Nginx IngressController in the cluster. (https://github.com/kubernetes/ingress-nginx)
 * [`update_image`](#update_image): Patch all deployments and statefulset container images matching the given +image_name+ to the given +image_version+.
 * [`wait_for_app`](#wait_for_app): Wait for a Replicated app to deploy and any statefulsets to be ready.
+* [`wait_for_rollout`](#wait_for_rollout): Wait for rollout of a set of Deployments and Statefulsets based on a k8s selector.
 
 ### Plans
 
@@ -80,6 +83,56 @@ Returns: `String` The password string.
 Data type: `Integer`
 
 The number of characters to generate.
+
+### <a name="pam_toolsgenerate_randomized_name"></a>`pam_tools::generate_randomized_name`
+
+Type: Puppet Language
+
+Given a stem and optional character count, return a name with a random extension.
+Useful for generating randomized temp directories, for example.
+
+Seeding is not tied to host(s), and should be random for each call.
+
+#### Examples
+
+##### 
+
+```puppet
+$r = pam_tools::generate_randomized_name('test', 12)
+notice($r)
+# Notice: Scope(Class[main]): test.x5gghIjk32ld
+```
+
+#### `pam_tools::generate_randomized_name(String $stem, Integer $count = 10)`
+
+Given a stem and optional character count, return a name with a random extension.
+Useful for generating randomized temp directories, for example.
+
+Seeding is not tied to host(s), and should be random for each call.
+
+Returns: `Any`
+
+##### Examples
+
+###### 
+
+```puppet
+$r = pam_tools::generate_randomized_name('test', 12)
+notice($r)
+# Notice: Scope(Class[main]): test.x5gghIjk32ld
+```
+
+##### `stem`
+
+Data type: `String`
+
+The start of the string.
+
+##### `count`
+
+Data type: `Integer`
+
+Number of randomized characters to add as a suffix.
 
 ### <a name="pam_toolsget_kots_app"></a>`pam_tools::get_kots_app`
 
@@ -232,6 +285,50 @@ The k8s namespace the application is installed in.
 Data type: `Boolean`
 
 Return json output, including the full hash of all Kots applicaiton statuses.
+
+### <a name="helm_install_chart"></a>`helm_install_chart`
+
+Install or upgrade a helm chart.
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `chart`
+
+Data type: `String`
+
+The chart to install. This could be a reference to a chart in a helm repository, or a path to a chart archive or directory.
+
+##### `version`
+
+Data type: `Optional[String]`
+
+If +chart+ is a reference, this is the version to install. If not set, the latest version is installed.
+
+##### `release`
+
+Data type: `String`
+
+The name of the installed instance of the chart.
+
+##### `values`
+
+Data type: `Optional[String]`
+
+YAML override values for chart settings.
+
+##### `namespace`
+
+Data type: `String`
+
+k8s namespace we're installing into.
+
+##### `kubeconfig`
+
+Data type: `String`
+
+The path to the k8s config file needed to access the cluster we're installing into.
 
 ### <a name="kots_download"></a>`kots_download`
 
@@ -469,6 +566,32 @@ Data type: `Pattern[/[0-9]+s/]`
 
 Number of seconds to wait for app http/s to return 'ok'
 
+### <a name="wait_for_rollout"></a>`wait_for_rollout`
+
+Wait for rollout of a set of Deployments and Statefulsets based on a k8s selector.
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `selector`
+
+Data type: `String`
+
+A k8s selector to constrain resources.
+
+##### `namespace`
+
+Data type: `String`
+
+The k8s namespace to operate in
+
+##### `timeout`
+
+Data type: `Pattern[/[0-9]+s/]`
+
+Number of seconds to wait for Deployment and StatefulSet rollouts to complete.
+
 ## Plans
 
 ### <a name="pam_toolsinstall_published"></a>`pam_tools::install_published`
@@ -497,7 +620,6 @@ The following parameters are available in the `pam_tools::install_published` pla
 * [`config_file`](#config_file)
 * [`airgap_bundle`](#airgap_bundle)
 * [`wait_for_app`](#wait_for_app)
-* [`system_ready_wait_minutes`](#system_ready_wait_minutes)
 
 ##### <a name="targets"></a>`targets`
 
@@ -545,15 +667,6 @@ Data type: `Boolean`
 Whether or not to wait for app deployment to complete before returning.
 
 Default value: ``true``
-
-##### <a name="system_ready_wait_minutes"></a>`system_ready_wait_minutes`
-
-Data type: `Integer`
-
-Number of minutes to wait for all k8s system pods to be ready after
-node restart.
-
-Default value: `5`
 
 ### <a name="pam_toolsteardown"></a>`pam_tools::teardown`
 

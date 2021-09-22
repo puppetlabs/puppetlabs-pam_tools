@@ -116,33 +116,36 @@ class KotsInstall < PAMTaskHelper
   def task(license_content:, password:, hostname:, kots_namespace:, kots_wait_duration:, config_content: nil, kots_install_options: '', airgap_bundle: nil, **_kwargs)
     license = YAML.safe_load(license_content)
 
-    tmpdir = Dir.mktmpdir('kots-install')
-
-    license_file = File.join(tmpdir, 'license.yaml')
-    File.write(license_file, license_content)
-
     config = config_content.nil? ?
       generate_config(license, hostname, password).to_yaml :
       config_content
-    config_file = File.join(tmpdir, 'config.yaml')
-    File.write(config_file, config)
 
-    kots_command = [
-      'kubectl-kots',
-      'install',
-      'puppet-application-manager/stable',
-      "--namespace=#{kots_namespace}",
-      "--shared-password=#{password}",
-      '--port-forward=false',
-      "--license-file=#{license_file}",
-      "--config-values=#{config_file}",
-      kots_install_options.to_s.split(' '),
-      "--wait-duration=#{kots_wait_duration}",
-    ].flatten
-    unless airgap_bundle.nil?
-      kots_command << "--airgap-bundle=#{airgap_bundle}"
+    kots_command = nil
+    output = nil
+    # Ensure cleanup of tmpdir and any secrets in the values given.
+    Dir.mktmpdir('kots-install') do |tmpdir|
+      license_file = File.join(tmpdir, 'license.yaml')
+      File.write(license_file, license_content)
+      config_file = File.join(tmpdir, 'config.yaml')
+      File.write(config_file, config)
+
+      kots_command = [
+        'kubectl-kots',
+        'install',
+        'puppet-application-manager/stable',
+        "--namespace=#{kots_namespace}",
+        "--shared-password=#{password}",
+        '--port-forward=false',
+        "--license-file=#{license_file}",
+        "--config-values=#{config_file}",
+        kots_install_options.to_s.split(' '),
+        "--wait-duration=#{kots_wait_duration}",
+      ].flatten
+      unless airgap_bundle.nil?
+        kots_command << "--airgap-bundle=#{airgap_bundle}"
+      end
+      output = run_command(kots_command)
     end
-    output = run_command(kots_command)
 
     {
       appname: get_appname(license),
