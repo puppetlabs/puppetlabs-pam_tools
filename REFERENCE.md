@@ -593,7 +593,6 @@ The following parameters are available in the `pam_tools::install_published` pla
 * [`config_file`](#config_file)
 * [`airgap_bundle`](#airgap_bundle)
 * [`wait_for_app`](#wait_for_app)
-* [`system_ready_wait_minutes`](#system_ready_wait_minutes)
 
 ##### <a name="targets"></a>`targets`
 
@@ -641,15 +640,6 @@ Data type: `Boolean`
 Whether or not to wait for app deployment to complete before returning.
 
 Default value: ``true``
-
-##### <a name="system_ready_wait_minutes"></a>`system_ready_wait_minutes`
-
-Data type: `Integer`
-
-Number of minutes to wait for all k8s system pods to be ready after
-node restart.
-
-Default value: `5`
 
 ### <a name="pam_toolsteardown"></a>`pam_tools::teardown`
 

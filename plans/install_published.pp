@@ -27,9 +27,6 @@
 #   Installs the application from an airgap bundle.
 # @param wait_for_app
 #   Whether or not to wait for app deployment to complete before returning.
-# @param system_ready_wait_minutes
-#   Number of minutes to wait for all k8s system pods to be ready after
-#   node restart.
 plan pam_tools::install_published(
   TargetSpec $targets,
   String $license_file,
@@ -37,7 +34,6 @@ plan pam_tools::install_published(
   Optional[String] $config_file = undef,
   Optional[String] $airgap_bundle = undef,
   Boolean $wait_for_app = true,
-  Integer $system_ready_wait_minutes = 5,
 ) {
   pam_tools::check_for_file('Bundle', $airgap_bundle, false)
   pam_tools::check_for_file('License', $license_file)
