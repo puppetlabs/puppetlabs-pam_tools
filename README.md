@@ -65,7 +65,7 @@ To update the [CHANGELOG](./CHANGELOG.md), generate a [Github token], and run:
 
 ```
 export CHANGELOG_GITHUB_TOKEN=<the-token>
-bundle exec changelog
+bundle exec rake changelog
 ```
 
 [PAM]: https://github.com/puppetlabs/puppet-application-manager
