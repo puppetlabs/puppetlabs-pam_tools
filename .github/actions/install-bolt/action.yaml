@@ -1,0 +1,16 @@
+name: Install and prepare Bolt
+description: Install the Bolt package and dependent modules for the project.
+runs:
+  using: composite
+  steps:
+    - name: Install Bolt
+      run: |
+        wget https://apt.puppet.com/puppet-tools-release-focal.deb
+        sudo dpkg -i puppet-tools-release-focal.deb
+        sudo apt-get update
+        sudo apt-get install puppet-bolt
+      shell: bash
+    - name: Prepare module
+      run: |
+        bolt module install
+      shell: bash

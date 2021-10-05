@@ -5,6 +5,13 @@ on:
     branches:
     - main
 
+env:
+  # https://vendor.replicated.com/apps/cd4pe/customer/1liKeLfya3YPpuSoQUAmDLQ4BeL/manage
+  CONNECT_LICENSE: ${{ secrets.CONNECT_LICENSE }}
+  KUBECTL_VERSION: v1.22.2
+  KOTS_VERSION: v1.52.0
+  HELM_VERSION: v3.5.2
+
 jobs:
   unit-test:
     runs-on: ubuntu-latest
@@ -18,3 +25,48 @@ jobs:
         run: bundle install
       - name: Run tests
         run: bundle exec rake unit_test
+
+  task-helm-acceptance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: nolar/setup-k3d-k3s@v1
+        with:
+          version: v1.19
+          k3d-args: -p 80:80@loadbalancer -p 443:443@loadbalancer
+      - uses: ./.github/actions/install-bolt
+      - uses: ./.github/actions/install-k8s-tools
+      - name: Install test helm chart
+        run: |-
+          bolt task run pam_tools::helm_install_chart --targets=localhost chart=./.github/test-chart release='test-release' values='name: testing'
+      - name: Check configmap
+        run: |
+          kubectl get configmap/test-chart-configmap -o yaml | grep 'Hello testing'
+      - name: Delete resources
+        run: |
+          bolt task run pam_tools::delete_k8s_app_resources --targets=localhost kots_slug=test-chart
+
+  plan-install-acceptance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Prepare license
+        run: printenv CONNECT_LICENSE > license.yaml
+      - uses: nolar/setup-k3d-k3s@v1
+        with:
+          version: v1.19
+          k3d-args: -p 80:80@loadbalancer -p 443:443@loadbalancer
+      - uses: ./.github/actions/install-bolt
+      - uses: ./.github/actions/install-k8s-tools
+      - name: Run install_published plan
+        run: |
+          bolt plan run pam_tools::install_published targets=localhost license_file="$(pwd)/license.yaml" app_timeout=900
+      - name: Output running pods
+        run: |
+          kubectl get pods
+      - name: Run teardown plan
+        run: |
+          bolt plan run pam_tools::teardown targets=localhost kots_slug=cd4pe remove_app_from_console=true delete_kotsadm=true
+      - name: Output running pods
+        run: |
+          kubectl get pods
