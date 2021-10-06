@@ -60,7 +60,7 @@ jobs:
       - uses: ./.github/actions/install-k8s-tools
       - name: Run install_published plan
         run: |
-          bolt plan run pam_tools::install_published targets=localhost license_file="$(pwd)/license.yaml" app_timeout=900
+          bolt plan run pam_tools::install_published targets=localhost license_file="$(pwd)/license.yaml" app_timeout=900 kots_install_options="--skip-preflights=true"
       - name: Output running pods
         run: |
           kubectl get pods

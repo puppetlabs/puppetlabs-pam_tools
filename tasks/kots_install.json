@@ -34,8 +34,7 @@
     },
     "kots_install_options": {
       "description": "Additional parameters to pass to `kubectl-kots install`.",
-      "type": "Optional[String]",
-      "default": "--skip-preflights=true"
+      "type": "Optional[String]"
     },
     "airgap_bundle": {
       "description": "Path on the target of an airgap bundle to install instead of using online installation.",

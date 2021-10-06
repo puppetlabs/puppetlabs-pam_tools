@@ -44,7 +44,7 @@ describe 'pam_tools::install_published' do
         'hostname' => 'spec-host',
         'kots_namespace' => 'default',
         'kots_wait_duration' => '5m',
-        'kots_install_options' => '--skip-preflights=true',
+        'kots_install_options' => nil,
       )
     expect_out_message.with_params('Installed connect on spec-host')
     expect_task('pam_tools::wait_for_app')

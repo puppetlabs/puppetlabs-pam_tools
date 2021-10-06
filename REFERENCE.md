@@ -637,6 +637,7 @@ The following parameters are available in the `pam_tools::install_published` pla
 * [`password`](#password)
 * [`config_file`](#config_file)
 * [`airgap_bundle`](#airgap_bundle)
+* [`kots_install_options`](#kots_install_options)
 * [`wait_for_app`](#wait_for_app)
 * [`app_timeout`](#app_timeout)
 
@@ -676,6 +677,16 @@ Default value: ``undef``
 Data type: `Optional[Pam_tools::Absolute_path]`
 
 Installs the application from an airgap bundle. Must be an absolute path.
+
+Default value: ``undef``
+
+##### <a name="kots_install_options"></a>`kots_install_options`
+
+Data type: `Optional[String]`
+
+Any additional command line options to pass directly to `kubectl-kots
+install` when the kots_install task is run. (--skip-preflights=true, or
+--skip-rbac-check=true, for example...)
 
 Default value: ``undef``
 
