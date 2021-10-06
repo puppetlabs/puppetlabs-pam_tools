@@ -12,6 +12,7 @@
 #   The start of the string.
 # @param count
 #   Number of randomized characters to add as a suffix.
+# @return A random string of the form '${stem}.${_random_char_ * ${count}}'
 function pam_tools::generate_randomized_name(
   String $stem,
   Integer $count = 10,
