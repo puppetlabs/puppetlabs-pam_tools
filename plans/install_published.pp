@@ -27,6 +27,9 @@
 #   Installs the application from an airgap bundle. Must be an absolute path.
 # @param wait_for_app
 #   Whether or not to wait for app deployment to complete before returning.
+# @param app_timeout
+#   If waiting for the app, this is the number of seconds to wait for kots
+#   to indicate that the app is ready.
 plan pam_tools::install_published(
   TargetSpec $targets,
   Pam_tools::Absolute_path $license_file,
@@ -34,6 +37,7 @@ plan pam_tools::install_published(
   Optional[Pam_tools::Absolute_path] $config_file = undef,
   Optional[Pam_tools::Absolute_path] $airgap_bundle = undef,
   Boolean $wait_for_app = true,
+  Integer $app_timeout = 600,
 ) {
   pam_tools::check_for_file('License', $license_file)
   pam_tools::check_for_file('Config', $config_file, false)
@@ -95,6 +99,7 @@ plan pam_tools::install_published(
       {
         'kots_slug'    => $kots_slug,
         'app_hostname' => $t.name,
+        'app_timeout'  => "${app_timeout}s",
       }
     }
   } else {

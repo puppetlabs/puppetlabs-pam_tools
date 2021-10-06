@@ -638,6 +638,7 @@ The following parameters are available in the `pam_tools::install_published` pla
 * [`config_file`](#config_file)
 * [`airgap_bundle`](#airgap_bundle)
 * [`wait_for_app`](#wait_for_app)
+* [`app_timeout`](#app_timeout)
 
 ##### <a name="targets"></a>`targets`
 
@@ -685,6 +686,15 @@ Data type: `Boolean`
 Whether or not to wait for app deployment to complete before returning.
 
 Default value: ``true``
+
+##### <a name="app_timeout"></a>`app_timeout`
+
+Data type: `Integer`
+
+If waiting for the app, this is the number of seconds to wait for kots
+to indicate that the app is ready.
+
+Default value: `600`
 
 ### <a name="pam_toolsteardown"></a>`pam_tools::teardown`
 
