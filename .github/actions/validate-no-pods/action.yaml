@@ -1,0 +1,18 @@
+name: Validate no pods running
+description: Check the default namespace for pods, and fail if any are found.
+runs:
+  using: composite
+  steps:
+    - run: |
+        # diagnostics
+        kubectl get pods
+        # fail if not empty
+        # NOTE: what we really want to test here are that all resources
+        # we generated have been removed. But that's a little tricky,
+        # since there are system resources that remain, and we'd need
+        # to be able to distinguish between system resources and escaped
+        # application resources. That would come down to things which
+        # are not labelled properly, which isn't really what we are
+        # testing for here anyway.
+        [ -z "$(kubectl get pods --ignore-not-found)" ]
+      shell: bash

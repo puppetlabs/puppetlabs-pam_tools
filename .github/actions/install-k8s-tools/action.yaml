@@ -1,5 +1,5 @@
 name: Install k8s tools
-descrption: Install kubectl, kots and helm into /usr/local/bin
+description: Install kubectl, kots and helm into /usr/local/bin based on environment variable versions set for KUBECTL_VERSION, KOTS_VERSION and HELM_VERSION.
 runs:
   using: composite
   steps:

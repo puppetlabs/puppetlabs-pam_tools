@@ -45,6 +45,7 @@ jobs:
       - name: Delete resources
         run: |
           bolt task run pam_tools::delete_k8s_app_resources --targets=localhost kots_slug=test-chart
+      - uses: ./.github/actions/validate-no-pods
 
   plan-install-acceptance:
     runs-on: ubuntu-latest
@@ -61,12 +62,17 @@ jobs:
       - name: Run install_published plan
         run: |
           bolt plan run pam_tools::install_published targets=localhost license_file="$(pwd)/license.yaml" app_timeout=900 kots_install_options="--skip-preflights=true"
-      - name: Output running pods
+      - name: Verify app ready
         run: |
+          # diagnostics
           kubectl get pods
+          kubectl kots get app -n default
+          # fail if not ready
+          kubectl kots get app -n default | grep -q 'cd4pe.*ready'
+      - name: Test idempotency
+        run: |
+          bolt plan run pam_tools::install_published targets=localhost license_file="$(pwd)/license.yaml" app_timeout=900 kots_install_options="--skip-preflights=true"
       - name: Run teardown plan
         run: |
           bolt plan run pam_tools::teardown targets=localhost kots_slug=cd4pe remove_app_from_console=true delete_kotsadm=true
-      - name: Output running pods
-        run: |
-          kubectl get pods
+      - uses: ./.github/actions/validate-no-pods
