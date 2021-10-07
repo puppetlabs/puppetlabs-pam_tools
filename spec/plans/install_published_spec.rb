@@ -15,9 +15,11 @@ describe 'pam_tools::install_published' do
   end
   let(:params) do
     {
-      'targets'      => targets,
-      'license_file' => license_file,
-      'password'     => 'puppet',
+      'targets'              => targets,
+      'license_file'         => license_file,
+      'password'             => 'puppet',
+      'kots_install_options' => '--test-flag',
+      'pam_variant'          => 'test-variant',
     }
   end
 
@@ -38,13 +40,14 @@ describe 'pam_tools::install_published' do
       .with_targets(targets)
       .always_return({ 'appname' => 'connect', 'kots_slug' => 'cd4pe' })
       .with_params(
-        'license_content' => license('connect'),
-        'password' => password,
-        'airgap_bundle' => nil,
-        'hostname' => 'spec-host',
-        'kots_namespace' => 'default',
-        'kots_wait_duration' => '5m',
-        'kots_install_options' => nil,
+        'license_content'      => license('connect'),
+        'password'             => password,
+        'airgap_bundle'        => nil,
+        'hostname'             => 'spec-host',
+        'kots_namespace'       => 'default',
+        'kots_wait_duration'   => '5m',
+        'kots_install_options' => '--test-flag',
+        'pam_variant'          => 'test-variant',
       )
     expect_out_message.with_params('Installed connect on spec-host')
     expect_task('pam_tools::wait_for_app')

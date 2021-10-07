@@ -39,6 +39,11 @@
     "airgap_bundle": {
       "description": "Path on the target of an airgap bundle to install instead of using online installation.",
       "type": "Optional[String]"
+    },
+    "pam_variant": {
+      "description": "The initial puppet-application-manager channel that will provide configuration for Kots.",
+      "type": "String",
+      "default": "stable"
     }
   }
 }

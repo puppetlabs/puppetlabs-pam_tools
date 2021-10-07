@@ -88,6 +88,7 @@ describe 'pam_tools::kots_install' do
         hostname: 'foo.rspec',
         kots_namespace: 'default',
         kots_wait_duration: '5m',
+        pam_variant: 'stable',
       }
 
       expect(task).to receive(:run_command).with(
@@ -126,6 +127,7 @@ describe 'pam_tools::kots_install' do
         hostname: 'foo.rspec',
         kots_namespace: 'default',
         kots_wait_duration: '5m',
+        pam_variant: 'stable',
         config_content: config_content.to_yaml,
         kots_install_options: '',
         airgap_bundle: './bundle.airgap',

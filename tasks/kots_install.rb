@@ -113,7 +113,7 @@ class KotsInstall < PAMTaskHelper
   end
 
   # Install the application.
-  def task(license_content:, password:, hostname:, kots_namespace:, kots_wait_duration:, config_content: nil, kots_install_options: '', airgap_bundle: nil, **_kwargs)
+  def task(license_content:, password:, hostname:, kots_namespace:, kots_wait_duration:, config_content: nil, kots_install_options: '', airgap_bundle: nil, pam_variant:, **_kwargs)
     license = YAML.safe_load(license_content)
 
     config = config_content.nil? ?
@@ -132,7 +132,7 @@ class KotsInstall < PAMTaskHelper
       kots_command = [
         'kubectl-kots',
         'install',
-        'puppet-application-manager/stable',
+        "puppet-application-manager/#{pam_variant}",
         "--namespace=#{kots_namespace}",
         "--shared-password=#{password}",
         '--port-forward=false',
