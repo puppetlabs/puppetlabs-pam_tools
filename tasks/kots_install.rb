@@ -57,49 +57,6 @@ class KotsInstall < PAMTaskHelper
     end
   end
 
-  # Configuration adjustments to fit on our 4cpu/8gb hosts.
-  def constraints_config(appname)
-    case appname
-    when 'connect'
-      YAML.safe_load(<<~YAML)
-        connect_postgres_console_memory:
-          value: '256'
-        connect_postgres_puppetdb_memory:
-          value: '512'
-        connect_postgres_orchestrator_memory:
-          value: '256'
-        connect_console_memory:
-          value: '768'
-        connect_orch_memory:
-          value: '768'
-        connect_bolt_memory:
-          value: '256'
-        connect_puppetdb_memory:
-          value: '768'
-        connect_puppetserver_memory:
-          value: '1024'
-        # These are testing overrides to allow scheduling on a 4cpu test host.
-        pe_console_cpu_request:
-          value: '100m'
-        pe_orchestrator_cpu_request:
-          value: '100m'
-        pe_puppetdb_cpu_request:
-          value: '100m'
-        pe_puppetserver_cpu_request:
-          value: '100m'
-      YAML
-    when 'comply'
-      YAML.safe_load(<<~YAML)
-        scarp_cpu_request:
-          value: 500m
-        theq_cpu_request:
-          value: 500m
-      YAML
-    else
-      {}
-    end
-  end
-
   # Generate a default application configuration for installation.
   def generate_config(license, hostname, password)
     appname = get_appname(license)
@@ -107,7 +64,6 @@ class KotsInstall < PAMTaskHelper
     config = base_config(appname, hostname)
     spec_values = config['spec']['values']
     spec_values.merge!(root_account_config(appname, password))
-    spec_values.merge!(constraints_config(appname))
 
     config
   end

@@ -1,0 +1,65 @@
+<%- |
+  String $kots_app,
+  String $hostname,
+  Optional[String] $password = undef,
+  Variant[Float,Integer] $allocated_memory_in_gigabytes = 16,
+  Variant[Float,Integer] $allocated_cpu = 8,
+| -%>
+---
+apiVersion: 'kots.io/v1beta1'
+kind: 'ConfigValues'
+metadata:
+  name: '<%= $kots_app %>'
+spec:
+  values:
+    hostname:
+      value: '<%= $hostname %>'
+    analytics:
+      value: '0'
+    accept_eula:
+      value: 'has_accepted_eula'
+<% if ($kots_app in ['cd4pe', 'connect']) { -%>
+    root_email:
+      value: 'noreply@puppet.com'
+  <%- if ($password =~ NotUndef) { -%>
+    root_password:
+      value: <%= $password %>
+  <%- } -%>
+<% } -%>
+<%-
+if ($kots_app == 'connect') {
+  # Allocate half the available to PE.
+  $memory_allocation = pam_tools::calculate_pe_memory($allocated_memory_in_gigabytes / 2)
+-%>
+    connect_postgres_console_memory:
+      value: '<%= $memory_allocation['postgres_console_memory'] %>'
+    connect_postgres_puppetdb_memory:
+      value: '<%= $memory_allocation['postgres_puppetdb_memory'] %>'
+    connect_postgres_orchestrator_memory:
+      value: '<%= $memory_allocation['postgres_orch_memory'] %>'
+    connect_console_memory:
+      value: '<%= $memory_allocation['console_memory'] %>'
+    connect_orch_memory:
+      value: '<%= $memory_allocation['orchestrator_memory'] %>'
+    connect_bolt_memory:
+      value: '<%= $memory_allocation['boltserver_memory'] %>'
+    connect_puppetdb_memory:
+      value: '<%= $memory_allocation['puppetdb_memory'] %>'
+    connect_puppetserver_memory:
+      value: '<%= $memory_allocation['puppetserver_memory'] %>'
+    # These are testing overrides to allow scheduling on a 4cpu test host.
+    pe_console_cpu_request:
+      value: '100m'
+    pe_orchestrator_cpu_request:
+      value: '100m'
+    pe_puppetdb_cpu_request:
+      value: '100m'
+    pe_puppetserver_cpu_request:
+      value: '100m'
+<% } elsif ($kots_app == 'comply') { -%>
+    scarp_cpu_request:
+      value: 500m
+    theq_cpu_request:
+      value: 500m
+<% } -%>
+# vim: ft=yaml

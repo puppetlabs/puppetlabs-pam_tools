@@ -10,17 +10,70 @@ describe 'pam_tools::install_published' do
 
   let(:license_file) { "#{tmpdir}/license.yaml" }
   let(:targets) { ['spec-host'] }
+  let(:plaintext_password) { 'puppet' }
   let(:password) do
-    Puppet::Pops::Types::PSensitiveType::Sensitive.new('puppet')
+    Puppet::Pops::Types::PSensitiveType::Sensitive.new(plaintext_password)
   end
   let(:params) do
     {
       'targets'              => targets,
       'license_file'         => license_file,
-      'password'             => 'puppet',
+      'password'             => plaintext_password,
       'kots_install_options' => '--test-flag',
       'pam_variant'          => 'test-variant',
     }
+  end
+
+  # The bolt-spec matchers aren't composable; I can't use include or
+  # regex matches on parameter checks, so I'm stuck with equating the
+  # generated strings.
+  def generate_connect_config(hostname, password, memory)
+    mem_unit = memory * 1024 / 18
+    <<~CONFIG
+      ---
+      apiVersion: 'kots.io/v1beta1'
+      kind: 'ConfigValues'
+      metadata:
+        name: 'connect'
+      spec:
+        values:
+          hostname:
+            value: '#{hostname}'
+          analytics:
+            value: '0'
+          accept_eula:
+            value: 'has_accepted_eula'
+          root_email:
+            value: 'noreply@puppet.com'
+          root_password:
+            value: #{password}
+          connect_postgres_console_memory:
+            value: '#{mem_unit}'
+          connect_postgres_puppetdb_memory:
+            value: '#{mem_unit * 2}'
+          connect_postgres_orchestrator_memory:
+            value: '#{mem_unit}'
+          connect_console_memory:
+            value: '#{mem_unit * 3}'
+          connect_orch_memory:
+            value: '#{mem_unit * 3}'
+          connect_bolt_memory:
+            value: '#{mem_unit * 1}'
+          connect_puppetdb_memory:
+            value: '#{mem_unit * 3}'
+          connect_puppetserver_memory:
+            value: '#{mem_unit * 4}'
+          # These are testing overrides to allow scheduling on a 4cpu test host.
+          pe_console_cpu_request:
+            value: '100m'
+          pe_orchestrator_cpu_request:
+            value: '100m'
+          pe_puppetdb_cpu_request:
+            value: '100m'
+          pe_puppetserver_cpu_request:
+            value: '100m'
+      # vim: ft=yaml
+    CONFIG
   end
 
   before(:each) do
@@ -41,6 +94,7 @@ describe 'pam_tools::install_published' do
       .always_return({ 'appname' => 'connect', 'kots_slug' => 'cd4pe' })
       .with_params(
         'license_content'      => license('connect'),
+        'config_content'       => generate_connect_config('spec-host', plaintext_password, 8),
         'password'             => password,
         'airgap_bundle'        => nil,
         'hostname'             => 'spec-host',
@@ -95,7 +149,7 @@ describe 'pam_tools::install_published' do
         'targets'       => targets,
         'license_file'  => license_file,
         'airgap_bundle' => airgap_bundle,
-        'password'      => 'puppet',
+        'password'      => plaintext_password,
       }
     end
 

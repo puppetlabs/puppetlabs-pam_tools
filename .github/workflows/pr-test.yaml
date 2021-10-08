@@ -61,7 +61,7 @@ jobs:
       - uses: ./.github/actions/install-k8s-tools
       - name: Run install_published plan
         run: |
-          bolt plan run pam_tools::install_published targets=localhost license_file="$(pwd)/license.yaml" app_timeout=900 kots_install_options="--skip-preflights=true"
+          bolt plan run pam_tools::install_published targets=localhost license_file="$(pwd)/license.yaml" app_timeout=900 kots_install_options="--skip-preflights=true" allocated_memory_in_gigabytes=7
       - name: Verify app ready
         run: |
           # diagnostics
@@ -71,7 +71,7 @@ jobs:
           kubectl kots get app -n default | grep -q 'cd4pe.*ready'
       - name: Test idempotency
         run: |
-          bolt plan run pam_tools::install_published targets=localhost license_file="$(pwd)/license.yaml" app_timeout=900 kots_install_options="--skip-preflights=true"
+          bolt plan run pam_tools::install_published targets=localhost license_file="$(pwd)/license.yaml" app_timeout=900 kots_install_options="--skip-preflights=true" allocated_memory_in_gigabytes=7
       - name: Run teardown plan
         run: |
           bolt plan run pam_tools::teardown targets=localhost kots_slug=cd4pe remove_app_from_console=true delete_kotsadm=true

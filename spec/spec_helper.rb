@@ -10,12 +10,10 @@ RSpec.configure do |c|
   c.mock_with :rspec
 end
 
-# Load the BoltSpec library
 require 'puppetlabs_spec_helper/module_spec_helper'
-require 'bolt_spec/plans'
 
-# Configure Puppet and Bolt for testing
-BoltSpec::Plans.init
+# Load the BoltSpec library
+require 'bolt_spec/plans'
 
 # Overrides a puppetlabs_spec_helper matcher
 require 'shared/matchers'

@@ -56,12 +56,6 @@ describe 'pam_tools::kots_install' do
     )
   end
 
-  it 'generates #constraints_config' do
-    expect(task.constraints_config('connect')).to include(
-      'connect_postgres_console_memory' => { 'value' => '256' }
-    )
-  end
-
   context '#generate_config' do
     it 'generates' do
       expect(task.generate_config(license_hash('connect'), 'foo.rspec', 'puppet')).to(
@@ -72,7 +66,6 @@ describe 'pam_tools::kots_install' do
             'values' => include(
               'hostname'            => { 'value' => 'foo.rspec' },
               'root_password'       => { 'value' => 'puppet' },
-              'connect_bolt_memory' => { 'value' => '256' },
             )
           },
         )

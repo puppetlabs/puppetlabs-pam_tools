@@ -36,10 +36,16 @@
 # @param pam_variant
 #   The initial puppet-application-manager channel that will provide
 #   configuration for Kots itself prior to Kots installing the application
-#   idenfitied by the +license_content+. This can be important for a
+#   identified by the +license_content+. This can be important for a
 #   GKE cluster, for example, which will require 'minimal-rbac' instead of
 #   'stable' unless the service-account used has permissions to modify
 #   clusteroles.
+# @param allocated_memory_in_gigabytes
+#   The total system memory being made available to the application.
+#   This should be in integer or float gigabytes. This is used to
+#   tune configuration for the app. It will be ignored if you are
+#   supplying your own +config_file+, or for any application other
+#   than Connect.
 # @param wait_for_app
 #   Whether or not to wait for app deployment to complete before returning.
 # @param app_timeout
@@ -53,6 +59,7 @@ plan pam_tools::install_published(
   Optional[Pam_tools::Absolute_path] $airgap_bundle = undef,
   Optional[String] $kots_install_options = undef,
   String $pam_variant = 'stable',
+  Variant[Integer,Float] $allocated_memory_in_gigabytes = 16,
   Boolean $wait_for_app = true,
   Integer $app_timeout = 600,
 ) {
@@ -90,12 +97,27 @@ plan pam_tools::install_published(
     'kots_install_options' => $kots_install_options,
     'pam_variant'          => $pam_variant,
   }
-  $install_options = $config_file =~ NotUndef ? {
-    true    => $base_install_options + { 'config_content' => file::read($config_file) },
-    default => $base_install_options,
-  }
   $install_results = run_task_with('pam_tools::kots_install', $install_targets) |$t| {
-    $install_options + { 'hostname' => $t.name }
+    case $config_file {
+      NotUndef: {
+        $config_content = file::read($config_file)
+      }
+      default: {
+        $config_content = epp(
+          'pam_tools/default-app-config.yaml.epp',
+          {
+            'kots_app'                      => $kots_app,
+            'hostname'                      => $t.name,
+            'password'                      => $_password,
+            'allocated_memory_in_gigabytes' => $allocated_memory_in_gigabytes,
+          }
+        )
+      }
+    }
+    $base_install_options + {
+      'config_content' => $config_content,
+      'hostname'       => $t.name,
+    }
   }
 
   if $wait_for_app {

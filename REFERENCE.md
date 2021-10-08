@@ -6,6 +6,7 @@
 
 ### Functions
 
+* [`pam_tools::calculate_pe_memory`](#pam_toolscalculate_pe_memory): This is a crude memory allocation system that is tuned for the base, minimal test memory instance of 4.5GB.  This allows you to spin up Conne
 * [`pam_tools::check_for_file`](#pam_toolscheck_for_file): Raises an error if the given file path does not exist or cannot be read.
 * [`pam_tools::generate_random_password`](#pam_toolsgenerate_random_password): Generate a random password of the given length using Ruby's SecureRandom library.
 * [`pam_tools::generate_randomized_name`](#pam_toolsgenerate_randomized_name): Given a stem and optional character count, return a name with a random extension. Useful for generating randomized temp directories, for exam
@@ -39,6 +40,77 @@
 * [`pam_tools::teardown`](#pam_toolsteardown): In successive tiers, teardown the application, it's admin-console metadata, and the Kots admin-console itself, if desired.  By default, just 
 
 ## Functions
+
+### <a name="pam_toolscalculate_pe_memory"></a>`pam_tools::calculate_pe_memory`
+
+Type: Puppet Language
+
+This is a crude memory allocation system that is tuned for the base,
+minimal test memory instance of 4.5GB.
+
+This allows you to spin up Connect on an 8GB test host with the PE
+components squeezed down into:
+
+  pam_tools::calculate_pe_memory(4.5)
+  #
+  # {
+  #   'console_memory'           => 768,
+  #   'postgres_console_memory'  => 256,
+  #   'puppetdb_memory'          => 768,
+  #   'postgres_puppetdb_memory' => 512,
+  #   'orchestrator_memory'      => 768,
+  #   'postgres_orch_memory'     => 256,
+  #   'boltserver_memory'        => 256,
+  #   'puppetserver_memory'      => 1024,
+  # }
+
+Leaving remaining memory for the rest of Connect and system.
+
+Greater memory can be allocated to PE as a whole, but the function simply
+scales linearly, and consequently, this starts to distort the practical
+memory allocation, since, for example, the console is unlikely to need much
+more, whereas postgres might. Still you can bump up PE to 8GB or more quickly
+this way without providing a custom values.yaml.
+
+#### `pam_tools::calculate_pe_memory(Variant[Float,Integer] $allocated_memory_in_gigabytes)`
+
+This is a crude memory allocation system that is tuned for the base,
+minimal test memory instance of 4.5GB.
+
+This allows you to spin up Connect on an 8GB test host with the PE
+components squeezed down into:
+
+  pam_tools::calculate_pe_memory(4.5)
+  #
+  # {
+  #   'console_memory'           => 768,
+  #   'postgres_console_memory'  => 256,
+  #   'puppetdb_memory'          => 768,
+  #   'postgres_puppetdb_memory' => 512,
+  #   'orchestrator_memory'      => 768,
+  #   'postgres_orch_memory'     => 256,
+  #   'boltserver_memory'        => 256,
+  #   'puppetserver_memory'      => 1024,
+  # }
+
+Leaving remaining memory for the rest of Connect and system.
+
+Greater memory can be allocated to PE as a whole, but the function simply
+scales linearly, and consequently, this starts to distort the practical
+memory allocation, since, for example, the console is unlikely to need much
+more, whereas postgres might. Still you can bump up PE to 8GB or more quickly
+this way without providing a custom values.yaml.
+
+Returns: `Any` Hash of memory resource limits in megabytes, keyed by service. This
+is suitable for settings for the Helm chart or Connect application config.
+
+##### `allocated_memory_in_gigabytes`
+
+Data type: `Variant[Float,Integer]`
+
+The number of gigabytes allocated specifically to PE. In Connect,
+for example, you could set this to half the system memory. But the
+minimum it will allocate is 4.5GB.
 
 ### <a name="pam_toolscheck_for_file"></a>`pam_tools::check_for_file`
 
@@ -649,6 +721,7 @@ The following parameters are available in the `pam_tools::install_published` pla
 * [`airgap_bundle`](#airgap_bundle)
 * [`kots_install_options`](#kots_install_options)
 * [`pam_variant`](#pam_variant)
+* [`allocated_memory_in_gigabytes`](#allocated_memory_in_gigabytes)
 * [`wait_for_app`](#wait_for_app)
 * [`app_timeout`](#app_timeout)
 
@@ -707,12 +780,24 @@ Data type: `String`
 
 The initial puppet-application-manager channel that will provide
 configuration for Kots itself prior to Kots installing the application
-idenfitied by the +license_content+. This can be important for a
+identified by the +license_content+. This can be important for a
 GKE cluster, for example, which will require 'minimal-rbac' instead of
 'stable' unless the service-account used has permissions to modify
 clusteroles.
 
 Default value: `'stable'`
+
+##### <a name="allocated_memory_in_gigabytes"></a>`allocated_memory_in_gigabytes`
+
+Data type: `Variant[Integer,Float]`
+
+The total system memory being made available to the application.
+This should be in integer or float gigabytes. This is used to
+tune configuration for the app. It will be ignored if you are
+supplying your own +config_file+, or for any application other
+than Connect.
+
+Default value: `16`
 
 ##### <a name="wait_for_app"></a>`wait_for_app`
 
