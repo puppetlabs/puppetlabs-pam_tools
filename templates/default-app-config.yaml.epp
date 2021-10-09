@@ -56,7 +56,7 @@ if ($kots_app == 'connect') {
       value: '100m'
     pe_puppetserver_cpu_request:
       value: '100m'
-<% } elsif ($kots_app == 'comply') { -%>
+<% } elsif ($kots_app == 'comply' and $allocated_cpu <= 4) { -%>
     scarp_cpu_request:
       value: 500m
     theq_cpu_request:

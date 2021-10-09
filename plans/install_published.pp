@@ -46,6 +46,11 @@
 #   tune configuration for the app. It will be ignored if you are
 #   supplying your own +config_file+, or for any application other
 #   than Connect.
+# @param allocated_cpu
+#   The total number of cpu available to the application. This should
+#   be whole or Float fractional cpu, but not millicpu. Currently the
+#   only affect is to tighten comply cpu requests to allow it to stand up
+#   with <= 4 cpu.
 # @param wait_for_app
 #   Whether or not to wait for app deployment to complete before returning.
 # @param app_timeout
@@ -60,6 +65,7 @@ plan pam_tools::install_published(
   Optional[String] $kots_install_options = undef,
   String $pam_variant = 'stable',
   Variant[Integer,Float] $allocated_memory_in_gigabytes = 16,
+  Variant[Integer,Float] $allocated_cpu = 8,
   Boolean $wait_for_app = true,
   Integer $app_timeout = 600,
 ) {
@@ -110,6 +116,7 @@ plan pam_tools::install_published(
             'hostname'                      => $t.name,
             'password'                      => $_password,
             'allocated_memory_in_gigabytes' => $allocated_memory_in_gigabytes,
+            'allocated_cpu'                 => $allocated_cpu,
           }
         )
       }

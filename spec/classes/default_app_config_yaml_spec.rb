@@ -83,6 +83,27 @@ describe 'pam_tools::test_default_app_config_template' do
             'hostname' => { 'value' => 'test.rspec' },
             'analytics' => { 'value' => '0' },
             'accept_eula' => { 'value' => 'has_accepted_eula' },
+          }
+        }
+      }
+    )
+  end
+
+  it 'produces a comply config for miniscule cpu' do
+    template_parameters['kots_app'] = 'comply'
+    template_parameters['allocated_cpu'] = 4
+    expect(yaml).to eq(
+      {
+        'apiVersion' => 'kots.io/v1beta1',
+        'kind' => 'ConfigValues',
+        'metadata' => {
+          'name' => 'comply'
+        },
+        'spec' =>  {
+          'values' => {
+            'hostname' => { 'value' => 'test.rspec' },
+            'analytics' => { 'value' => '0' },
+            'accept_eula' => { 'value' => 'has_accepted_eula' },
             'scarp_cpu_request' => { 'value' => '500m' },
             'theq_cpu_request' => { 'value' => '500m' },
           }

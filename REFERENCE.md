@@ -722,6 +722,7 @@ The following parameters are available in the `pam_tools::install_published` pla
 * [`kots_install_options`](#kots_install_options)
 * [`pam_variant`](#pam_variant)
 * [`allocated_memory_in_gigabytes`](#allocated_memory_in_gigabytes)
+* [`allocated_cpu`](#allocated_cpu)
 * [`wait_for_app`](#wait_for_app)
 * [`app_timeout`](#app_timeout)
 
@@ -798,6 +799,17 @@ supplying your own +config_file+, or for any application other
 than Connect.
 
 Default value: `16`
+
+##### <a name="allocated_cpu"></a>`allocated_cpu`
+
+Data type: `Variant[Integer,Float]`
+
+The total number of cpu available to the application. This should
+be whole or Float fractional cpu, but not millicpu. Currently the
+only affect is to tighten comply cpu requests to allow it to stand up
+with <= 4 cpu.
+
+Default value: `8`
 
 ##### <a name="wait_for_app"></a>`wait_for_app`
 
