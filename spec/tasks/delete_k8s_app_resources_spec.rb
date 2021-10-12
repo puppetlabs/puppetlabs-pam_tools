@@ -80,21 +80,11 @@ describe 'pam_tools::delete_k8s_app_resources' do
             'scale',
             'deployments,statefulsets',
             '--replicas=0',
-            '--namespace=default',
-            '--selector=app.kubernetes.io/part-of=app',
-          ]
-        ).and_return("one scaled\n")
-        expect(task).to receive(:run_command).with(
-          [
-            'kubectl',
-            'wait',
-            'pod',
-            '--for=delete',
             '--timeout=300s',
             '--namespace=default',
             '--selector=app.kubernetes.io/part-of=app',
           ]
-        )
+        ).and_return("one scaled\n")
 
         expect(task.task(args)).to include(
           kots_slug: 'app',

@@ -231,18 +231,10 @@ class PAMTaskHelper < TaskHelper
           'scale',
           'deployments,statefulsets',
           '--replicas=0',
+          "--timeout=#{scaledown_timeout}s",
         ] + common_options
         scale_output = run_command(scale_command).split("\n")
         scaled, scale_messages = scale_output.partition { |l| l.match(%r{ scaled$}) }
-
-        wait_command = [
-          'kubectl',
-          'wait',
-          'pod',
-          '--for=delete',
-          "--timeout=#{scaledown_timeout}s",
-        ] + common_options
-        run_command(wait_command)
 
         results[:scale_command] = scale_command.join(' ')
         results[:messages_from_scale] = scale_messages

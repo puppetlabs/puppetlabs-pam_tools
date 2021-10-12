@@ -206,4 +206,49 @@ describe 'PAMTaskHelper' do
       expect(image.to_s).to eq('some/thing/interesting:1.2.3 deployment.apps/foo containers:bar')
     end
   end
+
+  context '#scale_down' do
+    it 'scales down deployments and statefulsets' do
+      expect(helper).to receive(:run_command).with(
+        include(
+          'kubectl',
+          'get',
+          '--namespace=default',
+          '--selector=part-of=app',
+        )
+      ).and_return('stuff')
+      expect(helper).to receive(:run_command).with(
+        include(
+          'kubectl',
+          'scale',
+          '--timeout=60s',
+        )
+      ).and_return(
+        <<~SCALED
+          message
+          deployment.apps/foo scaled
+          statefulset.apps/bar scaled
+        SCALED
+      )
+
+      expect(helper.scale_down('default', 'part-of=app', '60')).to match(
+        {
+          messages_from_scale: [ 'message' ],
+          scaled: [ 'deployment.apps/foo scaled', 'statefulset.apps/bar scaled' ],
+          scale_command: %r{kubectl scale.*},
+        }
+      )
+    end
+
+    it 'does nothing if nothing to scale down' do
+      expect(helper).to receive(:run_command).and_return('')
+
+      expect(helper.scale_down('default', 'part-of=app', '60')).to match(
+        {
+          messages_from_scale: [%r{No deployments.*to scale down}],
+          scaled: [],
+        }
+      )
+    end
+  end
 end
