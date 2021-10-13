@@ -251,4 +251,38 @@ describe 'PAMTaskHelper' do
       )
     end
   end
+
+  context '#delete_resources' do
+    it 'deletes resources for a given label' do
+      expect(helper).to receive(:run_command).with(
+        include(
+          'kubectl',
+          'api-resources',
+          '--verbs=delete',
+        )
+      ).and_return('resource,list')
+      expect(helper).to receive(:run_command).with(
+        include(
+          'kubectl',
+          'delete',
+          'resource,list',
+          '--namespace=default',
+          '--selector=foo=bar',
+        )
+      ).and_return(
+        <<~DELETED
+          message
+          resource/foo deleted
+        DELETED
+      )
+
+      expect(helper.delete_resources('default', 'foo=bar')).to match(
+        {
+          delete_command: %r{kubectl delete.*},
+          messages_from_delete: [ 'message' ],
+          deleted: [ 'resource/foo deleted' ],
+        }
+      )
+    end
+  end
 end

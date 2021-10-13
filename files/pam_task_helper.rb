@@ -248,9 +248,9 @@ class PAMTaskHelper < TaskHelper
     # selector.
     #
     # @param namespace [String] the k8s namespace.
-    # @param selector [String] the k8s selector.
-    # @return [Hash] of the command, a list of what was deleted and any extra
-    # messages output during the delete operation.
+    # @param selector [String] the k8s selector expression.
+    # @return [Hash] of the command, a list of what was deleted and any
+    # extra messages output during the delete operation.
     def delete_resources(namespace, selector)
       resource_types = get_api_resources_for('delete')
 
