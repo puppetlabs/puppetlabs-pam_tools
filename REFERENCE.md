@@ -20,6 +20,7 @@
 ### Tasks
 
 * [`delete_k8s_app_resources`](#delete_k8s_app_resources): Delete the kubernetes resources for a given replicated app. Does not remove the app from the Replicated admin console, which allows for re-in
+* [`delete_k8s_resources`](#delete_k8s_resources): Delete a set of kubernetes resources associated with a given selector expression.
 * [`delete_kots_app`](#delete_kots_app): Use kubectl-kots to delete an instance of a Replicated app from the Kots admin-console. Note that this does not delete the application resour
 * [`delete_kotsadm`](#delete_kotsadm): Delete the Kots admin-console applicaiton from the cluster. Note, if you use this on a Kurl host, you will need to re-run the Kurl installer 
 * [`destroy_nginx_ingress`](#destroy_nginx_ingress): Tear down the Nginx IngressController.
@@ -297,6 +298,26 @@ The Replicated application slug.
 Data type: `Integer`
 
 Seconds to wait for app to scale down to 0 replica before deletion of all related resources.
+
+### <a name="delete_k8s_resources"></a>`delete_k8s_resources`
+
+Delete a set of kubernetes resources associated with a given selector expression.
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `selector`
+
+Data type: `String`
+
+The selector expression constraint. Only delete resources with labels satisfying this expression.
+
+##### `kots_namespace`
+
+Data type: `String`
+
+The k8s namespace we're operating in.
 
 ### <a name="delete_kots_app"></a>`delete_kots_app`
 

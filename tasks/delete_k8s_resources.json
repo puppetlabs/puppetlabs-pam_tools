@@ -1,0 +1,18 @@
+{
+  "description": "Delete a set of kubernetes resources associated with a given selector expression.",
+  "files": [
+    "pam_tools/files/pam_task_helper.rb"
+  ],
+  "input_method": "stdin",
+  "parameters": {
+    "selector": {
+      "description": "The selector expression constraint. Only delete resources with labels satisfying this expression.",
+      "type": "String"
+    },
+    "kots_namespace": {
+      "description": "The k8s namespace we're operating in.",
+      "type": "String",
+      "default": "default"
+    }
+  }
+}
