@@ -463,12 +463,6 @@ Data type: `String`
 
 k8s namespace we're installing into.
 
-##### `kubeconfig`
-
-Data type: `String`
-
-The path to the k8s config file needed to access the cluster we're installing into.
-
 ### <a name="kots_download"></a>`kots_download`
 
 Downloads the currently installed source of a given Kots application from the admin console to the given directory. This task is a wrapper round `kubectl-kots download`.
