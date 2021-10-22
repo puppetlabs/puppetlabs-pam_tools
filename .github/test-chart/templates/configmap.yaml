@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-chart-configmap
+  labels:
+    app.kubernetes.io/part-of: test-chart
+data:
+  myvalue: "Hello {{ .Values.name }}"

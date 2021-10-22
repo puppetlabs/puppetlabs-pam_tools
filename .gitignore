@@ -14,7 +14,7 @@
 /junit/
 /log/
 /pkg/
-/spec/fixtures/manifests/
+/spec/fixtures/manifests/site.pp
 /spec/fixtures/modules/
 /tmp/
 /vendor/

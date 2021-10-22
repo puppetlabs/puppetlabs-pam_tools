@@ -6,9 +6,7 @@ require_relative '../files/pam_task_helper.rb'
 
 # Install or upgrade a Helm chart.
 class HelmInstallChart < PAMTaskHelper
-  def task(chart:, release:, namespace:, kubeconfig:, version: nil, values: nil, **_kwargs)
-    kubeconfig_path = File.expand_path(kubeconfig)
-
+  def task(chart:, release:, namespace:, version: nil, values: nil, **_kwargs)
     install_command = [
       'helm',
       'upgrade',
@@ -16,7 +14,6 @@ class HelmInstallChart < PAMTaskHelper
       chart,
       '--install',
       "--namespace=#{namespace}",
-      "--kubeconfig=#{kubeconfig_path}",
     ]
     install_command << "--version=#{version}" if !version.nil?
 

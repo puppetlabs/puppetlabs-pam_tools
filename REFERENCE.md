@@ -6,19 +6,27 @@
 
 ### Functions
 
+* [`pam_tools::calculate_pe_memory`](#pam_toolscalculate_pe_memory): This is a crude memory allocation system that is tuned for the base, minimal test memory instance of 4.5GB.  This allows you to spin up Conne
 * [`pam_tools::check_for_file`](#pam_toolscheck_for_file): Raises an error if the given file path does not exist or cannot be read.
 * [`pam_tools::generate_random_password`](#pam_toolsgenerate_random_password): Generate a random password of the given length using Ruby's SecureRandom library.
 * [`pam_tools::generate_randomized_name`](#pam_toolsgenerate_randomized_name): Given a stem and optional character count, return a name with a random extension. Useful for generating randomized temp directories, for exam
 * [`pam_tools::get_kots_app`](#pam_toolsget_kots_app): Return the application name based on kots_slug and entitlement from the given license file.
 * [`pam_tools::get_kots_slug`](#pam_toolsget_kots_slug): Return the appSlug from a given license file.
 
+### Data types
+
+* [`Pam_tools::Absolute_path`](#pam_toolsabsolute_path): Pattern ensuring a path begins with a POSIX '/', a Windows 'C:\' or '\', or a 'puppet:/' module file uri.
+
 ### Tasks
 
 * [`delete_k8s_app_resources`](#delete_k8s_app_resources): Delete the kubernetes resources for a given replicated app. Does not remove the app from the Replicated admin console, which allows for re-in
+* [`delete_k8s_resources`](#delete_k8s_resources): Delete a set of kubernetes resources associated with a given selector expression.
 * [`delete_kots_app`](#delete_kots_app): Use kubectl-kots to delete an instance of a Replicated app from the Kots admin-console. Note that this does not delete the application resour
 * [`delete_kotsadm`](#delete_kotsadm): Delete the Kots admin-console applicaiton from the cluster. Note, if you use this on a Kurl host, you will need to re-run the Kurl installer 
 * [`destroy_nginx_ingress`](#destroy_nginx_ingress): Tear down the Nginx IngressController.
+* [`get_ingress_ip`](#get_ingress_ip): Returns the ip of the ingress load balancer service.
 * [`get_kots_app_status`](#get_kots_app_status): Return the state of a given Kots application, or not-installed. Will also return not-installed if kots itself is not installed.
+* [`has_ingress_controller`](#has_ingress_controller): Checks whether an ingress controller is installed.
 * [`helm_install_chart`](#helm_install_chart): Install or upgrade a helm chart.
 * [`kots_download`](#kots_download): Downloads the currently installed source of a given Kots application from the admin console to the given directory. This task is a wrapper ro
 * [`kots_install`](#kots_install): Install a Replicated application with kubectl-kots for testing. This task takes several shortcuts for configuration and security which are no
@@ -35,6 +43,77 @@
 * [`pam_tools::teardown`](#pam_toolsteardown): In successive tiers, teardown the application, it's admin-console metadata, and the Kots admin-console itself, if desired.  By default, just 
 
 ## Functions
+
+### <a name="pam_toolscalculate_pe_memory"></a>`pam_tools::calculate_pe_memory`
+
+Type: Puppet Language
+
+This is a crude memory allocation system that is tuned for the base,
+minimal test memory instance of 4.5GB.
+
+This allows you to spin up Connect on an 8GB test host with the PE
+components squeezed down into:
+
+  pam_tools::calculate_pe_memory(4.5)
+  #
+  # {
+  #   'console_memory'           => 768,
+  #   'postgres_console_memory'  => 256,
+  #   'puppetdb_memory'          => 768,
+  #   'postgres_puppetdb_memory' => 512,
+  #   'orchestrator_memory'      => 768,
+  #   'postgres_orch_memory'     => 256,
+  #   'boltserver_memory'        => 256,
+  #   'puppetserver_memory'      => 1024,
+  # }
+
+Leaving remaining memory for the rest of Connect and system.
+
+Greater memory can be allocated to PE as a whole, but the function simply
+scales linearly, and consequently, this starts to distort the practical
+memory allocation, since, for example, the console is unlikely to need much
+more, whereas postgres might. Still you can bump up PE to 8GB or more quickly
+this way without providing a custom values.yaml.
+
+#### `pam_tools::calculate_pe_memory(Variant[Float,Integer] $allocated_memory_in_gigabytes)`
+
+This is a crude memory allocation system that is tuned for the base,
+minimal test memory instance of 4.5GB.
+
+This allows you to spin up Connect on an 8GB test host with the PE
+components squeezed down into:
+
+  pam_tools::calculate_pe_memory(4.5)
+  #
+  # {
+  #   'console_memory'           => 768,
+  #   'postgres_console_memory'  => 256,
+  #   'puppetdb_memory'          => 768,
+  #   'postgres_puppetdb_memory' => 512,
+  #   'orchestrator_memory'      => 768,
+  #   'postgres_orch_memory'     => 256,
+  #   'boltserver_memory'        => 256,
+  #   'puppetserver_memory'      => 1024,
+  # }
+
+Leaving remaining memory for the rest of Connect and system.
+
+Greater memory can be allocated to PE as a whole, but the function simply
+scales linearly, and consequently, this starts to distort the practical
+memory allocation, since, for example, the console is unlikely to need much
+more, whereas postgres might. Still you can bump up PE to 8GB or more quickly
+this way without providing a custom values.yaml.
+
+Returns: `Any` Hash of memory resource limits in megabytes, keyed by service. This
+is suitable for settings for the Helm chart or Connect application config.
+
+##### `allocated_memory_in_gigabytes`
+
+Data type: `Variant[Float,Integer]`
+
+The number of gigabytes allocated specifically to PE. In Connect,
+for example, you could set this to half the system memory. But the
+minimum it will allocate is 4.5GB.
 
 ### <a name="pam_toolscheck_for_file"></a>`pam_tools::check_for_file`
 
@@ -110,7 +189,7 @@ Useful for generating randomized temp directories, for example.
 
 Seeding is not tied to host(s), and should be random for each call.
 
-Returns: `Any`
+Returns: `Any` A random string of the form '${stem}.${_random_char_ * ${count}}'
 
 ##### Examples
 
@@ -180,6 +259,20 @@ Data type: `String`
 
 A String of the license file content.
 
+## Data types
+
+### <a name="pam_toolsabsolute_path"></a>`Pam_tools::Absolute_path`
+
+Pattern ensuring a path begins with a POSIX '/',
+a Windows 'C:\' or '\',
+or a 'puppet:/' module file uri.
+
+Alias of
+
+```puppet
+Pattern[/^(\/.*|\\|[A-Z]:\\|puppet:\/)/]
+```
+
 ## Tasks
 
 ### <a name="delete_k8s_app_resources"></a>`delete_k8s_app_resources`
@@ -207,6 +300,26 @@ The Replicated application slug.
 Data type: `Integer`
 
 Seconds to wait for app to scale down to 0 replica before deletion of all related resources.
+
+### <a name="delete_k8s_resources"></a>`delete_k8s_resources`
+
+Delete a set of kubernetes resources associated with a given selector expression.
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `selector`
+
+Data type: `String`
+
+The selector expression constraint. Only delete resources with labels satisfying this expression.
+
+##### `kots_namespace`
+
+Data type: `String`
+
+The k8s namespace we're operating in.
 
 ### <a name="delete_kots_app"></a>`delete_kots_app`
 
@@ -260,6 +373,26 @@ Tear down the Nginx IngressController.
 
 **Supports noop?** false
 
+### <a name="get_ingress_ip"></a>`get_ingress_ip`
+
+Returns the ip of the ingress load balancer service.
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `port`
+
+Data type: `Integer`
+
+Service exposing this port.
+
+##### `timeout`
+
+Data type: `Integer`
+
+Number of retry secs. A LoadBalancer service that has just been started, may take several seconds before it reports an available ip address. A retry of 0 will succesfully return nothing if no ip is found, otherwise a timeout error will be raised.
+
 ### <a name="get_kots_app_status"></a>`get_kots_app_status`
 
 Return the state of a given Kots application, or not-installed. Will also return not-installed if kots itself is not installed.
@@ -285,6 +418,12 @@ The k8s namespace the application is installed in.
 Data type: `Boolean`
 
 Return json output, including the full hash of all Kots applicaiton statuses.
+
+### <a name="has_ingress_controller"></a>`has_ingress_controller`
+
+Checks whether an ingress controller is installed.
+
+**Supports noop?** false
 
 ### <a name="helm_install_chart"></a>`helm_install_chart`
 
@@ -323,12 +462,6 @@ YAML override values for chart settings.
 Data type: `String`
 
 k8s namespace we're installing into.
-
-##### `kubeconfig`
-
-Data type: `String`
-
-The path to the k8s config file needed to access the cluster we're installing into.
 
 ### <a name="kots_download"></a>`kots_download`
 
@@ -417,6 +550,12 @@ Additional parameters to pass to `kubectl-kots install`.
 Data type: `Optional[String]`
 
 Path on the target of an airgap bundle to install instead of using online installation.
+
+##### `pam_variant`
+
+Data type: `String`
+
+The initial puppet-application-manager channel that will provide configuration for Kots.
 
 ### <a name="kots_upload"></a>`kots_upload`
 
@@ -598,13 +737,40 @@ Number of seconds to wait for Deployment and StatefulSet rollouts to complete.
 
 Install a published Replicated application via kubectl-kots.
 
-Runs kubectl-kots with the given license and configuration and waits for deployment.
+Runs kubectl-kots with the given license and configuration and waits for
+deployment.
+
+The `kubectl-kots install` installs the Replicated Kots admin-console as
+a side effect if not already installed into the cluster. Initial configuration
+for Kots comes from one of the puppet-application-manager channels as determined
+by the +pam_variant+ parameter. By default Kots is installed with
+puppet-application-manager/stable.
+
+If a password is given, it is used for the Kots admin-console admin login.
+If no password is given, one will be randomly generated and output at the end
+of the plan for reference.
 
 If no application configuration file is given, a very basic configuration file is
-generated by the task, using the given password, for automated installation.
+generated using [this template](./templates/default-app-config.yaml.epp).
 
-The `kubectl-kots install` will also install the Replicated Kots admin-console as
-a side effect if not already installed into the cluster.
+In the case of cd4pe/cygnus installs, the same password and a root login of
+noreply@puppet.com are set in the generated configuration. If a custom
++config_file+ is provided, it is assumed to be complete, and is used instead.
+
+One of the key configuration parameters in the application configuration
+is the hostname used in the cert and ingress. If a +config_file+ is provided,
+hostname should be set there and will take precedence.
+
+Alternately, +hostname+ can be set as a parameter, and will be set
+in the generated config if no +config_file+ is given.
+
+Generally, when working with test hosts, no +config_file+ is given, and
++hostname+ is left unset. In this case, the app hostname parameter is
+populated based on the target automatically, using either the target's
+hostname in the case of ssh targets, or by generating a wildcard dns hostname
+that will be recognized by [nip.io](https://nip.io) based on the app name and
+a lookup of the cluster's ingress load balancer ip. This will be something
+like cd4pe.10.20.30.40.nip.io, ensuring a connection on 10.20.30.40.
 
 Because `kubectl-kots install` is not an idempotent operation, if the plan
 detects that the application has already been installed, it will skip this
@@ -619,7 +785,13 @@ The following parameters are available in the `pam_tools::install_published` pla
 * [`password`](#password)
 * [`config_file`](#config_file)
 * [`airgap_bundle`](#airgap_bundle)
+* [`hostname`](#hostname)
+* [`kots_install_options`](#kots_install_options)
+* [`pam_variant`](#pam_variant)
+* [`allocated_memory_in_gigabytes`](#allocated_memory_in_gigabytes)
+* [`allocated_cpu`](#allocated_cpu)
 * [`wait_for_app`](#wait_for_app)
+* [`app_timeout`](#app_timeout)
 
 ##### <a name="targets"></a>`targets`
 
@@ -629,7 +801,7 @@ The hosts to operate on.
 
 ##### <a name="license_file"></a>`license_file`
 
-Data type: `String`
+Data type: `Pam_tools::Absolute_path`
 
 Path to the application license file.
 
@@ -639,26 +811,82 @@ Data type: `Optional[String[6]]`
 
 Password to use for both the Kots admin-console and for the application itself
 (if not present in the config_file). If no password is given, one will be
-randomly generated, and you will need to use `kubectl kots reset-password`.
+randomly generated.
 
 Default value: ``undef``
 
 ##### <a name="config_file"></a>`config_file`
 
-Data type: `Optional[String]`
+Data type: `Optional[Pam_tools::Absolute_path]`
 
-Path to application configuration defaults. If not provided, a basic config
-will be generated by the install task.
+Absolute path to application configuration defaults. If not provided, a
+basic config will be generated by the install task.
 
 Default value: ``undef``
 
 ##### <a name="airgap_bundle"></a>`airgap_bundle`
 
-Data type: `Optional[String]`
+Data type: `Optional[Pam_tools::Absolute_path]`
 
-Installs the application from an airgap bundle.
+Installs the application from an airgap bundle. Must be an absolute path.
 
 Default value: ``undef``
+
+##### <a name="hostname"></a>`hostname`
+
+Data type: `Optional[String]`
+
+The application hostname to set in a generated configuration. Ignored if
++config_file+ given. Otherwise generated from target if not set (see
+above).
+
+Default value: ``undef``
+
+##### <a name="kots_install_options"></a>`kots_install_options`
+
+Data type: `Optional[String]`
+
+Any additional command line options to pass directly to `kubectl-kots
+install` when the kots_install task is run. (--skip-preflights=true, or
+--skip-rbac-check=true, for example...)
+
+Default value: ``undef``
+
+##### <a name="pam_variant"></a>`pam_variant`
+
+Data type: `String`
+
+The initial puppet-application-manager channel that will provide
+configuration for Kots itself prior to Kots installing the application
+identified by the +license_content+. This can be important for a
+GKE cluster, for example, which will require 'minimal-rbac' instead of
+'stable' unless the service-account used has permissions to modify
+clusteroles.
+
+Default value: `'stable'`
+
+##### <a name="allocated_memory_in_gigabytes"></a>`allocated_memory_in_gigabytes`
+
+Data type: `Variant[Integer,Float]`
+
+The total system memory being made available to the application.
+This should be in integer or float gigabytes. This is used to
+tune configuration for the app. It will be ignored if you are
+supplying your own +config_file+, or for any application other
+than Connect.
+
+Default value: `16`
+
+##### <a name="allocated_cpu"></a>`allocated_cpu`
+
+Data type: `Variant[Integer,Float]`
+
+The total number of cpu available to the application. This should
+be whole or Float fractional cpu, but not millicpu. Currently the
+only affect is to tighten comply cpu requests to allow it to stand up
+with <= 4 cpu.
+
+Default value: `8`
 
 ##### <a name="wait_for_app"></a>`wait_for_app`
 
@@ -667,6 +895,15 @@ Data type: `Boolean`
 Whether or not to wait for app deployment to complete before returning.
 
 Default value: ``true``
+
+##### <a name="app_timeout"></a>`app_timeout`
+
+Data type: `Integer`
+
+If waiting for the app, this is the number of seconds to wait for kots
+to indicate that the app is ready.
+
+Default value: `600`
 
 ### <a name="pam_toolsteardown"></a>`pam_tools::teardown`
 

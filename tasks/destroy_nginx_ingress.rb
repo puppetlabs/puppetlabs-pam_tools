@@ -21,3 +21,5 @@ class DestroyNginxIngress < PAMTaskHelper
     }
   end
 end
+
+DestroyNginxIngress.run if __FILE__ == $PROGRAM_NAME

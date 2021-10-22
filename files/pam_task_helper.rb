@@ -139,6 +139,18 @@ class PAMTaskHelper < TaskHelper
       end
     end
 
+    # @return [Array] of Service resource hashes across all namespaces.
+    def get_all_services
+      kots_command = [
+        'kubectl',
+        'get',
+        'service',
+        '--all-namespaces',
+        '--output=json',
+      ]
+      JSON.parse(run_command(kots_command))['items']
+    end
+
     # @param namespace [String] the namespace to get from.
     # @return [Array] of deployment and statefulset kind/name strings.
     def get_deployments_and_statefulsets(namespace)
@@ -231,18 +243,10 @@ class PAMTaskHelper < TaskHelper
           'scale',
           'deployments,statefulsets',
           '--replicas=0',
+          "--timeout=#{scaledown_timeout}s",
         ] + common_options
         scale_output = run_command(scale_command).split("\n")
         scaled, scale_messages = scale_output.partition { |l| l.match(%r{ scaled$}) }
-
-        wait_command = [
-          'kubectl',
-          'wait',
-          'pod',
-          '--for=delete',
-          "--timeout=#{scaledown_timeout}s",
-        ] + common_options
-        run_command(wait_command)
 
         results[:scale_command] = scale_command.join(' ')
         results[:messages_from_scale] = scale_messages
@@ -256,9 +260,9 @@ class PAMTaskHelper < TaskHelper
     # selector.
     #
     # @param namespace [String] the k8s namespace.
-    # @param selector [String] the k8s selector.
-    # @return [Hash] of the command, a list of what was deleted and any extra
-    # messages output during the delete operation.
+    # @param selector [String] the k8s selector expression.
+    # @return [Hash] of the command, a list of what was deleted and any
+    # extra messages output during the delete operation.
     def delete_resources(namespace, selector)
       resource_types = get_api_resources_for('delete')
 

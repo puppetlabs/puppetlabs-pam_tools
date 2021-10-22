@@ -1,0 +1,5 @@
+apiVersion: v2
+name: test-chart
+description: A tiny chart for ci testing.
+type: application
+version: 1.0.0

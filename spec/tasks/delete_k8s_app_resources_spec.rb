@@ -19,7 +19,7 @@ describe 'pam_tools::delete_k8s_app_resources' do
     before(:each) do
       expect(task).to receive(:run_command).with(
         array_including(['kubectl', 'api-resources'])
-      ).and_return('list of things')
+      ).and_return('list of things').exactly(3).times
       expect(task).to receive(:run_command).with(
         [
           'kubectl',
@@ -30,16 +30,22 @@ describe 'pam_tools::delete_k8s_app_resources' do
           '--selector=app.kubernetes.io/part-of=app',
         ]
       ).and_return(scaleable_response)
-      expect(task).to receive(:run_command).with(
-        [
-          'kubectl',
-          'delete',
-          'list,of,things',
-          '--wait=true',
-          '--namespace=default',
-          '--selector=app.kubernetes.io/part-of=app',
-        ]
-      ).and_return(deletion_response)
+      [
+        'app.kubernetes.io/part-of=app',
+        'kots.io/app-slug=app',
+        'app.kubernetes.io/instance=app-vault',
+      ].each do |s|
+        expect(task).to receive(:run_command).with(
+          include(
+            'kubectl',
+            'delete',
+            'list,of,things',
+            '--wait=true',
+            '--namespace=default',
+            "--selector=#{s}",
+          )
+        ).and_return(deletion_response)
+      end
     end
 
     context 'when there is something to delete' do
@@ -49,10 +55,22 @@ describe 'pam_tools::delete_k8s_app_resources' do
         expect(task.task(args)).to include(
           kots_slug: 'app',
           messages_from_scale: ['No deployments or statefulsets to scale down.'],
-          messages_from_delete: ['message'],
-          deleted: [
-            'one deleted',
-            'two deleted',
+          delete_results: [
+            include(
+              delete_command: %r{kubectl delete.*--selector=app\.kubernetes\.io/part-of=app},
+              deleted: [ 'one deleted', 'two deleted' ],
+              messages_from_delete: [ 'message' ],
+            ),
+            include(
+              delete_command: %r{kubectl delete.*--selector=kots\.io/app-slug=app},
+              deleted: [ 'one deleted', 'two deleted' ],
+              messages_from_delete: [ 'message' ],
+            ),
+            include(
+              delete_command: %r{kubectl delete.*--selector=app\.kubernetes\.io/instance=app-vault},
+              deleted: [ 'one deleted', 'two deleted' ],
+              messages_from_delete: [ 'message' ],
+            ),
           ],
         )
       end
@@ -64,7 +82,17 @@ describe 'pam_tools::delete_k8s_app_resources' do
       it 'returns just messages' do
         expect(task.task(args)).to include(
           kots_slug: 'app',
-          messages_from_delete: ['message', 'nothing to delete'],
+          delete_results: [
+            include(
+              messages_from_delete: [ 'message', 'nothing to delete' ],
+            ),
+            include(
+              messages_from_delete: [ 'message', 'nothing to delete' ],
+            ),
+            include(
+              messages_from_delete: [ 'message', 'nothing to delete' ],
+            ),
+          ],
         )
       end
     end
@@ -80,25 +108,25 @@ describe 'pam_tools::delete_k8s_app_resources' do
             'scale',
             'deployments,statefulsets',
             '--replicas=0',
-            '--namespace=default',
-            '--selector=app.kubernetes.io/part-of=app',
-          ]
-        ).and_return("one scaled\n")
-        expect(task).to receive(:run_command).with(
-          [
-            'kubectl',
-            'wait',
-            'pod',
-            '--for=delete',
             '--timeout=300s',
             '--namespace=default',
             '--selector=app.kubernetes.io/part-of=app',
           ]
-        )
+        ).and_return("one scaled\n")
 
         expect(task.task(args)).to include(
           kots_slug: 'app',
-          deleted: ['one deleted'],
+          delete_results: [
+            include(
+              deleted: [ 'one deleted' ],
+            ),
+            include(
+              deleted: [ 'one deleted' ],
+            ),
+            include(
+              deleted: [ 'one deleted' ],
+            ),
+          ],
           scaled: ['one scaled'],
         )
       end

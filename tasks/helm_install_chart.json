@@ -25,11 +25,6 @@
       "description": "k8s namespace we're installing into.",
       "type": "String",
       "default": "default"
-    },
-    "kubeconfig": {
-      "description": "The path to the k8s config file needed to access the cluster we're installing into.",
-     "type": "String",
-     "default": "~/.kube/config"
     }
   }
 }

@@ -1,0 +1,14 @@
+name: Install k8s tools
+description: Install kubectl, kots and helm into /usr/local/bin based on environment variable versions set for KUBECTL_VERSION, KOTS_VERSION and HELM_VERSION.
+runs:
+  using: composite
+  steps:
+    - run: |
+        curl -o "${HOME}/kubectl" -L "https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+        chmod +x "${HOME}/kubectl"
+        sudo mv "${HOME}/kubectl" /usr/local/bin
+        curl -s -L "https://github.com/replicatedhq/kots/releases/download/${KOTS_VERSION}/kots_linux_amd64.tar.gz" | tar zxf - -C "${HOME}/"
+        sudo mv "${HOME}/kots" /usr/local/bin/kubectl-kots
+        curl -s -L "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" | tar zxf - -C "${HOME}/"
+        sudo mv "${HOME}/linux-amd64/helm" /usr/local/bin
+      shell: bash

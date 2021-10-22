@@ -5,21 +5,24 @@ require_relative '../../tasks/start_nginx_ingress.rb'
 
 describe 'pam_tools::start_nginx_ingress' do
   let(:task) { StartNginxIngress.new }
+  let(:timeout) { 10 }
   let(:args) do
     {
       version: '0.0.0',
       provider: 'spec',
-      timeout: '1',
+      timeout: timeout,
     }
   end
   let(:source) { 'https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.0.0/deploy/static/provider/spec/deploy.yaml' }
-
-  it 'runs' do
-    apply_command = [
+  let(:apply_command) do
+    [
       'kubectl',
       'apply',
       "--filename=#{source}",
     ]
+  end
+
+  it 'runs' do
     expect(task).to(
       receive(:run_command)
         .with(apply_command)
@@ -31,7 +34,7 @@ describe 'pam_tools::start_nginx_ingress' do
           include(
             'kubectl',
             'rollout',
-            '--timeout=1s',
+            "--timeout=#{timeout}s",
           )
         )
         .and_return('waited')

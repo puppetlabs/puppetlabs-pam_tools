@@ -11,7 +11,6 @@ describe 'pam_tools::helm_install_chart' do
       chart: 'test/chart',
       release: 'test-release',
       namespace: 'default',
-      kubeconfig: '~/.kube/config',
     }
   end
   let(:helm_args) do
@@ -22,7 +21,6 @@ describe 'pam_tools::helm_install_chart' do
       'test/chart',
       '--install',
       '--namespace=default',
-      %r{--kubeconfig=.*/.kube/config},
     ]
   end
 

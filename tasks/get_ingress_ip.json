@@ -1,0 +1,19 @@
+{
+  "description": "Returns the ip of the ingress load balancer service.",
+  "files": [
+    "pam_tools/files/pam_task_helper.rb"
+  ],
+  "input_method": "stdin",
+  "parameters": {
+    "port": {
+      "description": "Service exposing this port.",
+      "type": "Integer",
+      "default": 80
+    },
+    "timeout": {
+      "description": "Number of retry secs. A LoadBalancer service that has just been started, may take several seconds before it reports an available ip address. A retry of 0 will succesfully return nothing if no ip is found, otherwise a timeout error will be raised.",
+      "type": "Integer",
+      "default": 5
+    }
+  }
+}

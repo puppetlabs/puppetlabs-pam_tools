@@ -14,7 +14,8 @@ class StartNginxIngress < PAMTaskHelper
     ]
     apply_output = run_command(apply_command)
 
-    # ingress object creation hard fails until the controller is ready
+    # Any ingress object creation hard fails until the controller is
+    # eady, so wait.
     wait_command = [
       'kubectl',
       'rollout',
@@ -33,3 +34,5 @@ class StartNginxIngress < PAMTaskHelper
     }
   end
 end
+
+StartNginxIngress.run if __FILE__ == $PROGRAM_NAME
