@@ -2,16 +2,28 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
-## [v0.1.0](https://github.com/puppetlabs/puppetlabs-pam_tools/tree/v0.1.0) (2021-09-22)
+## [v1.0.0](https://github.com/puppetlabs/puppetlabs-pam_tools/tree/v1.0.0) (2021-10-22)
 
-[Full Changelog](https://github.com/puppetlabs/puppetlabs-pam_tools/compare/646d8c7eb638523ce791ccb20df12c84e8b465cf...v0.1.0)
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-pam_tools/compare/v0.1.0...v1.0.0)
 
-### UNCATEGORIZED PRS; LABEL THEM ON GITHUB
+### Added
 
+- \(REPLATS-457\) Add gke cluster support [\#6](https://github.com/puppetlabs/puppetlabs-pam_tools/pull/6) ([jpartlow](https://github.com/jpartlow))
+
+## [v0.1.0](https://github.com/puppetlabs/puppetlabs-pam_tools/tree/v0.1.0) (2021-09-29)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-pam_tools/compare/3b0cbf47115c941274dd7c3b35df2941e2b9b4c5...v0.1.0)
+
+### Added
+
+- \(maint\) Add gemfile lock for Snyk [\#5](https://github.com/puppetlabs/puppetlabs-pam_tools/pull/5) ([jpartlow](https://github.com/jpartlow))
 - \(maint\) Add spec test for airgap install [\#4](https://github.com/puppetlabs/puppetlabs-pam_tools/pull/4) ([MikaelSmith](https://github.com/MikaelSmith))
 - \(REPLATS-427\) Add helm install task [\#3](https://github.com/puppetlabs/puppetlabs-pam_tools/pull/3) ([jpartlow](https://github.com/jpartlow))
-- \(maint\) Update a few task/plan doc references [\#2](https://github.com/puppetlabs/puppetlabs-pam_tools/pull/2) ([jpartlow](https://github.com/jpartlow))
 - \(REPLATS-427\) Add an update\_image task to patch image versions [\#1](https://github.com/puppetlabs/puppetlabs-pam_tools/pull/1) ([jpartlow](https://github.com/jpartlow))
+
+### Fixed
+
+- \(maint\) Update a few task/plan doc references [\#2](https://github.com/puppetlabs/puppetlabs-pam_tools/pull/2) ([jpartlow](https://github.com/jpartlow))
 
 
 
