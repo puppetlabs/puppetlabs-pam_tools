@@ -625,7 +625,7 @@ The controller version to install in the cluster.
 
 ##### `provider`
 
-Data type: `String`
+Data type: `Optional[String]`
 
 The provider implementation to use.
 

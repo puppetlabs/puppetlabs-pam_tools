@@ -12,8 +12,7 @@
     },
     "provider": {
       "description": "The provider implementation to use.",
-      "type": "String",
-      "default": "cloud"
+      "type": "Optional[String]"
     },
     "timeout": {
       "description": "Number of secs to wait for controller to be ready.",

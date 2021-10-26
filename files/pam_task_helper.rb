@@ -283,6 +283,20 @@ class PAMTaskHelper < TaskHelper
         deleted: deleted,
       }
     end
+
+    # @return [Boolean] true if heuristics indicate that the cluster is a KinD container.
+    def kind_cluster?
+      cmd = [
+        'kubectl',
+        'get',
+        'pod',
+        '--selector=app=kindnet',
+        '--all-namespaces',
+        '--output=name',
+      ]
+      result = run_command(cmd).strip
+      !result.empty?
+    end
   end
 
   include KubectlCommands
