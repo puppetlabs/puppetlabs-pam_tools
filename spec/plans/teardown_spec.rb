@@ -60,6 +60,7 @@ describe 'pam_tools::teardown' do
       .with_params(
         'kots_namespace'    => 'default',
         'scaledown_timeout' => 300,
+        'force'             => false,
       )
 
     result = run_plan('pam_tools::teardown', params)
