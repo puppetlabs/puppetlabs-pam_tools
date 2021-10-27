@@ -303,7 +303,7 @@ class PAMTaskHelper < TaskHelper
 
   # Kots command helpers.
   module KotsCommands
-    def kots_app_status(namespace)
+    def kots_app_status(namespace, exit_on_fail: true)
       command = [
         'kubectl-kots',
         'get',
@@ -311,7 +311,7 @@ class PAMTaskHelper < TaskHelper
         "--namespace=#{namespace}",
         '--output=json',
       ]
-      run_command(command)
+      run_command(command, exit_on_fail)
     end
   end
 

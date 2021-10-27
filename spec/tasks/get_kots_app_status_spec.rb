@@ -42,7 +42,8 @@ describe 'pam_tools::get_kots_app_status' do
           'apps',
           '--namespace=default',
           '--output=json',
-        ]
+        ],
+        true
       ).and_return(apps_hash)
     end
 

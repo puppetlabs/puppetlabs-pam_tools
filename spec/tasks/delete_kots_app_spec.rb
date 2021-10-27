@@ -12,6 +12,15 @@ describe 'pam_tools::delete_kots_app' do
       force: false,
     }
   end
+  let(:kots_is_running) { 'kots is running' }
+
+  before(:each) do
+    expect(task).to(
+      receive(:run_command)
+        .with(include('kubectl-kots', 'get', 'apps'), false)
+        .and_return(kots_is_running)
+    )
+  end
 
   it 'deletes an app' do
     expect(task).to(
@@ -78,7 +87,8 @@ describe 'pam_tools::delete_kots_app' do
         'apps',
         '--namespace=default',
         '--output=json',
-      ]
+      ],
+      true
     ).and_return(apps_hash)
 
     expect(task).to(
@@ -94,5 +104,13 @@ describe 'pam_tools::delete_kots_app' do
         'kubectl-kots remove app2 --namespace=default' => 'deleted',
       }
     )
+  end
+
+  context 'when kotsadm is not installed' do
+    let(:kots_is_running) { 'Error: *message* unable to find kotsadm pod' }
+
+    it 'returns a message rather than failing' do
+      expect(task.task(params)).to eq('kotsadm not found, nothing to do')
+    end
   end
 end
