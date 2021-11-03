@@ -13,8 +13,10 @@ def location_for(place_or_version, fake_version = nil)
   end
 end
 
-ruby_version_segments = Gem::Version.new(RUBY_VERSION.dup).segments
-minor_version = ruby_version_segments[0..1].join('.')
+#ruby_version_segments = Gem::Version.new(RUBY_VERSION.dup).segments
+#minor_version = ruby_version_segments[0..1].join('.')
+# Pinning to 2.6 to keep Gemfile.lock static between Ruby versions when using `bundle exec`
+minor_version = '2.6'
 
 group :development do
   gem 'json', '~>2.5',                                           require: false
