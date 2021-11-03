@@ -49,14 +49,15 @@ http_ok_within() {
 
 check_return_code() {
     protocol=$1
-    curl --insecure --location --silent --output /dev/null --write-out '%{http_code}' "${protocol}://${app_hostname}"
+    timeout "$2" bash -c \
+      "curl --insecure --location --silent --output /dev/null --write-out '%{http_code}' ${protocol}://${app_hostname}"
 }
 
 if ! http_ok_within "${HTTP_TIMEOUT}"; then
     echo
     echo "http/s return codes not 200 within timeout"
-    echo "https returned: $(check_return_code https)"
-    echo "http returned: $(check_return_code http)"
+    echo "https returned: $(check_return_code https "${HTTP_TIMEOUT}")"
+    echo "http returned: $(check_return_code http "${HTTP_TIMEOUT}")"
     echo
     echo "kubectl get pods:"
     kubectl -n "${KOTS_NAMESPACE}" get pods -A;
