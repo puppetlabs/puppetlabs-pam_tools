@@ -139,12 +139,14 @@ class PAMTaskHelper < TaskHelper
       end
     end
 
-    # @return [Array] of Service resource hashes across all namespaces.
-    def get_all_services
+    # @param type [String] resource type to fetch.
+    # @return [Array] of all k8s resource hashes across all namespaces matching
+    # the given +type+.
+    def get_resources(type)
       kots_command = [
         'kubectl',
         'get',
-        'service',
+        type,
         '--all-namespaces',
         '--output=json',
       ]
