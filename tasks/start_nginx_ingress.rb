@@ -5,7 +5,8 @@ require_relative '../files/pam_task_helper.rb'
 # Start an Nginx IngressController.
 class StartNginxIngress < PAMTaskHelper
 
-  def task(version:, provider:, timeout:, **_kwargs)
+  def task(version:, timeout:, provider: nil, **_kwargs)
+    provider ||= kind_cluster? ? 'kind' : 'cloud'
     source_url = "https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v#{version}/deploy/static/provider/#{provider}/deploy.yaml"
     apply_command = [
       'kubectl',

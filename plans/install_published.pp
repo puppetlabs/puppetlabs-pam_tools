@@ -105,7 +105,7 @@ plan pam_tools::install_published(
   ##########################################
   # Ensure we have Ingress controllers setup
   # Allows us to later reach the app on http for an eventual health check.
-  # Kurl hosts will have this, gke or kind/k3s/k3d likely will need it installed.
+  # Kurl hosts will have this, gke, k3s or kind likely will need it installed.
   $have_ingress_controllers = run_task('pam_tools::has_ingress_controller', $targets)
   $no_ingress_targets = $have_ingress_controllers.filter_set() |$result| {
     $result.message() == 'false'

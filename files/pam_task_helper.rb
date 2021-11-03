@@ -139,12 +139,14 @@ class PAMTaskHelper < TaskHelper
       end
     end
 
-    # @return [Array] of Service resource hashes across all namespaces.
-    def get_all_services
+    # @param type [String] resource type to fetch.
+    # @return [Array] of all k8s resource hashes across all namespaces matching
+    # the given +type+.
+    def get_resources(type)
       kots_command = [
         'kubectl',
         'get',
-        'service',
+        type,
         '--all-namespaces',
         '--output=json',
       ]
@@ -283,13 +285,27 @@ class PAMTaskHelper < TaskHelper
         deleted: deleted,
       }
     end
+
+    # @return [Boolean] true if heuristics indicate that the cluster is a KinD container.
+    def kind_cluster?
+      cmd = [
+        'kubectl',
+        'get',
+        'pod',
+        '--selector=app=kindnet',
+        '--all-namespaces',
+        '--output=name',
+      ]
+      result = run_command(cmd).strip
+      !result.empty?
+    end
   end
 
   include KubectlCommands
 
   # Kots command helpers.
   module KotsCommands
-    def kots_app_status(namespace)
+    def kots_app_status(namespace, exit_on_fail: true)
       command = [
         'kubectl-kots',
         'get',
@@ -297,7 +313,7 @@ class PAMTaskHelper < TaskHelper
         "--namespace=#{namespace}",
         '--output=json',
       ]
-      run_command(command)
+      run_command(command, exit_on_fail)
     end
   end
 

@@ -3,12 +3,16 @@
 
 Bolt module providing tasks and plans for installing and managing Puppet Application Manager projects.
 
-1. [Description](#description)
-1. [Setup](#setup)
-1. [Usage](#usage)
+* [Description](#description)
+* [Setup](#setup)
+* [Usage](#usage)
   * [Installing a Replicated app](#installing-a-replicated-app)
-1. [Reference](#reference)
-1. [Development](#development)
+    * [Credentials](#credentials)
+  * [k3d and KinD](#k3d-and-kind)
+  * [Getting Ingress IP](#getting-ingress-ip)
+  * [Accessing the Kots admin-console](#accessing-the-kots-admin-console)
+* [Reference](#reference)
+* [Development](#development)
   * [Testing](#testing)
   * [Changelog](#changelog)
 
@@ -21,8 +25,9 @@ Compatible with the following cluster types:
 * [kURL], specifically [puppet-application-manager-standalone]; not yet tested with a [puppet-application-manager] HA cluster.
 * [k3s]
 * [GKE]
-* [Docker Desktop] TODO
-* [KinD] TODO
+* [Docker Desktop]
+* [k3d] (see below)
+* [KinD] (see below)
 
 ## Setup
 
@@ -42,6 +47,7 @@ In particular, the target you run bolt against should have:
 
 * [kubectl]
 * [kubectl-kots]
+* [ruby] \(because most of the tasks are Ruby\)
 * [helm] \(optional, depending on whether you installing helm charts\)
 
 installed.
@@ -57,7 +63,7 @@ In particular, when working with a GKE cluster, you will probably be using a tar
 
 The pam_tools::install_published plan lets you install a Replicated application into a cluster with just a +license_file+.
 
-Basic configuration for auto install is generated automatically, but you can pass a YAML config file as well. (See the [default config template](./templates/default-app-config.yaml.epp), or one of the ${KOTS\_APP-config.yaml examples from [holodeck-manifests/dev](https://github.com/puppetlabs/holodeck-manifests/tree/main/dev))
+Basic configuration for auto install is generated automatically, but you can pass a YAML config file as well. (See the [default config template](./templates/default-app-config.yaml.epp), or one of the ${KOTS\_APP}-config.yaml examples from [holodeck-manifests/dev](https://github.com/puppetlabs/holodeck-manifests/tree/main/dev))
 
 If your cluster is below the minimum cpu and memory requirements for the application, be aware that the application preflights will halt deployment and the installation will silently fail. You'll need to include '--skip-preflights=true' in the +kots_install_options+ parameter to get past that.
 
@@ -67,9 +73,27 @@ By default, Kots is installed with puppet-application-manager/stable, but if ins
 
 If you do not supply a password, the install plan will generate one for you. This password is used both for the Kots admin-console and the application being installed. The plan output will include details for the hostname you should use to reach the application, and, if applicable, the application user and the password if it was generated for you.
 
+### k3d and KinD
+
+These are 'k3s in docker' and 'k8s in docker' environments, respectively. In both cases, the entire kubernetes environment is installed in a container managed by docker on a vm. This introduces an additional proxy layer to get host ports connected to the container, so when specifying the initial cluster creation, you need to ensure that 80 and 443 are proxied by docker so that the plan is able to test that applications are up after install. The method for doing this is implementation dependent.
+
+For k3d, it's simply adding some port arguments:
+
+```sh
+k3d cluster create test -p 80:80@loadbalancer -p 443:443@loadbalancer
+```
+
+For KinD, the port configuration is passed in a yaml configuration file. An example from holodeck-manifests proxying 80 and 443 is [here](https://github.com/puppetlabs/holodeck-manifests/blob/main/dev/kind-ingress-ports.yaml). So, assuming ${SRCDIR} is defined, you could create the cluster like this:
+
+```sh
+kind create cluster --config "${SRCDIR}/holodeck-manifests/dev/kind-ingress-ports.yaml"
+```
+
 ### Getting Ingress IP
 
 Run the pam_tools::get_ingress_ip task to retrieve the ip address of the cluster's ingress.
+
+This is specific to an ingress that is using a LoadBalancer service. An ingress relying on a NodePort service doesn't provide an accessible ip in its service definition. The ip in these cases would be the ip of each node in the cluster.
 
 ### Accessing the Kots admin-console
 
@@ -115,6 +139,7 @@ bundle exec rake changelog
 [k3s]: https://k3s.io/
 [GKE]: https://cloud.google.com/kubernetes-engine
 [Docker Desktop]: https://www.docker.com/products/docker-desktop
+[k3d]: https://k3d.io/
 [KinD]: https://kind.sigs.k8s.io/
 [puppet-application-manager]: https://kurl.sh/puppet-application-manager
 [puppet-application-manager-standalone]: https://kurl.sh/puppet-application-manager-standalone

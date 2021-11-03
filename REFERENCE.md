@@ -367,6 +367,12 @@ Data type: `Integer`
 
 Seconds to wait for app to scale down to 0 replica before deletion of all related resources.
 
+##### `force`
+
+Data type: `Boolean`
+
+Remove kotsadm even if this looks to be a Kurl cluster.
+
 ### <a name="destroy_nginx_ingress"></a>`destroy_nginx_ingress`
 
 Tear down the Nginx IngressController.
@@ -625,7 +631,7 @@ The controller version to install in the cluster.
 
 ##### `provider`
 
-Data type: `String`
+Data type: `Optional[String]`
 
 The provider implementation to use.
 

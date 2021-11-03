@@ -13,7 +13,7 @@ class GetIngressIP < PAMTaskHelper
   end
 
   def get_load_balancer_ip(port)
-    services = get_all_services
+    services = get_resources('service')
     lb = get_load_balancer_for_port(services, port)
 
     return unless lb

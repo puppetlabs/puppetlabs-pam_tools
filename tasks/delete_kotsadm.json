@@ -14,6 +14,11 @@
       "description": "Seconds to wait for app to scale down to 0 replica before deletion of all related resources.",
       "type": "Integer",
       "default": 300
+    },
+    "force": {
+      "description": "Remove kotsadm even if this looks to be a Kurl cluster.",
+      "type": "Boolean",
+      "default": false
     }
   }
 }
