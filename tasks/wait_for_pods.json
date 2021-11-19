@@ -1,0 +1,15 @@
+{
+  "description": "Wait for all pods in a given set of namespaces (or all namespaces if not given) to become ready.",
+  "input_method": "environment",
+  "parameters": {
+    "namespaces": {
+      "description": "Space separated list of namespaces to check. If not given, all namespaces will be checked.",
+      "type": "Optional[String]"
+    },
+    "timeout": {
+      "description": "Number of seconds to wait for each pod to become ready.",
+      "type": "Integer",
+      "default": 60
+    }
+  } 
+}
