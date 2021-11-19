@@ -33,7 +33,7 @@ if ! kots_app_ready_within "${APP_TIMEOUT}" || ! deploy_sts_ready_within "${STS_
     kubectl kots -n "${KOTS_NAMESPACE}" get app;
     echo
     echo "kubectl get pods:"
-    kubectl -n "${KOTS_NAMESPACE}" get pods -A;
+    kubectl get pods -A;
     exit 1;
 fi
 
