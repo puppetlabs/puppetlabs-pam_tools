@@ -35,6 +35,7 @@
 * [`start_nginx_ingress`](#start_nginx_ingress): Starts an Nginx IngressController in the cluster. (https://github.com/kubernetes/ingress-nginx)
 * [`update_image`](#update_image): Patch all deployments and statefulset container images matching the given +image_name+ to the given +image_version+.
 * [`wait_for_app`](#wait_for_app): Wait for a Replicated app to deploy and any statefulsets to be ready.
+* [`wait_for_pods`](#wait_for_pods): Wait for all pods in a given set of namespaces (or all namespaces if not given) to become ready.
 * [`wait_for_rollout`](#wait_for_rollout): Wait for rollout of a set of Deployments and Statefulsets based on a k8s selector.
 
 ### Plans
@@ -710,6 +711,26 @@ Number of seconds to wait for Deployment and StatefulSet rollouts to complete.
 Data type: `Pattern[/[0-9]+s/]`
 
 Number of seconds to wait for app http/s to return 'ok'
+
+### <a name="wait_for_pods"></a>`wait_for_pods`
+
+Wait for all pods in a given set of namespaces (or all namespaces if not given) to become ready.
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `namespaces`
+
+Data type: `Optional[String]`
+
+Space separated list of namespaces to check. If not given, all namespaces will be checked.
+
+##### `timeout`
+
+Data type: `Integer`
+
+Number of seconds to wait for each pod to become ready.
 
 ### <a name="wait_for_rollout"></a>`wait_for_rollout`
 
