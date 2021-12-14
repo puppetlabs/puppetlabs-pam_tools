@@ -56,6 +56,9 @@
 #   The application hostname to set in a generated configuration. Ignored if
 #   +config_file+ given. Otherwise generated from target if not set (see
 #   above).
+# @param webhook_hostname
+#   For applications that present a webhook, hosts the webhook on a separate
+#   Ingress at the specified hostname rather than an external port.
 # @param kots_install_options
 #   Any additional command line options to pass directly to `kubectl-kots
 #   install` when the kots_install task is run. (--skip-preflights=true, or
@@ -90,6 +93,7 @@ plan pam_tools::install_published(
   Optional[Pam_tools::Absolute_path] $config_file = undef,
   Optional[Pam_tools::Absolute_path] $airgap_bundle = undef,
   Optional[String] $hostname = undef,
+  Optional[String] $webhook_hostname = undef,
   Optional[String] $kots_install_options = undef,
   String $pam_variant = 'stable',
   Variant[Integer,Float] $allocated_memory_in_gigabytes = 16,
@@ -176,6 +180,7 @@ plan pam_tools::install_published(
           {
             'kots_app'                      => $kots_app,
             'hostname'                      => pick($hostname, $nip_hostname, $t.host),
+            'webhook_hostname'              => $webhook_hostname,
             'password'                      => $_password,
             'allocated_memory_in_gigabytes' => $allocated_memory_in_gigabytes,
             'allocated_cpu'                 => $allocated_cpu,
@@ -195,6 +200,16 @@ plan pam_tools::install_published(
       |- EOW
     }
     set_var($t, 'app_hostname', $configured_hostname)
+    $configured_wh_hostname = pick($config_hash.dig('spec', 'values', 'backend_hostname', 'value'), $configured_hostname)
+    set_var($t, 'webhook_hostname', $configured_wh_hostname)
+    $webhook_port = $configured_wh_hostname != $configured_hostname ? {
+      true  => '443',
+      false => pick(
+        $config_hash.dig('spec', 'values', 'backend_port', 'value'),
+        '8000',
+      ),
+    }
+    set_var($t, 'webhook_port', $webhook_port)
   }
 
   ##################################################################
@@ -250,9 +265,12 @@ plan pam_tools::install_published(
     $app_config = $t.vars()['replicated_config_hash']
     $admin_user = $app_config.dig('spec', 'values', 'root_email', 'value')
     $app_hostname = $t.vars()['app_hostname']
+    $wh_hostname = $t.vars()['webhook_hostname']
+    $wh_port = $t.vars()['webhook_port']
 
     out::message("  ** Target: ${t}")
     out::message("  **   ${kots_app} hostname: ${app_hostname}")
+    out::message("  **   ${kots_app} webhook: ${wh_hostname}:${wh_port}")
     if $admin_user =~ NotUndef {
       out::message("  **   ${kots_app} root login: ${admin_user}")
     }

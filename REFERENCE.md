@@ -813,6 +813,7 @@ The following parameters are available in the `pam_tools::install_published` pla
 * [`config_file`](#config_file)
 * [`airgap_bundle`](#airgap_bundle)
 * [`hostname`](#hostname)
+* [`webhook_hostname`](#webhook_hostname)
 * [`kots_install_options`](#kots_install_options)
 * [`pam_variant`](#pam_variant)
 * [`allocated_memory_in_gigabytes`](#allocated_memory_in_gigabytes)
@@ -866,6 +867,15 @@ Data type: `Optional[String]`
 The application hostname to set in a generated configuration. Ignored if
 +config_file+ given. Otherwise generated from target if not set (see
 above).
+
+Default value: ``undef``
+
+##### <a name="webhook_hostname"></a>`webhook_hostname`
+
+Data type: `Optional[String]`
+
+For applications that present a webhook, hosts the webhook on a separate
+Ingress at the specified hostname rather than an external port.
 
 Default value: ``undef``
 

@@ -1,6 +1,7 @@
 <%- |
   String $kots_app,
   String $hostname,
+  Optional[String] $webhook_hostname = undef,
   Optional[String] $password = undef,
   Variant[Float,Integer] $allocated_memory_in_gigabytes = 16,
   Variant[Float,Integer] $allocated_cpu = 8,
@@ -24,6 +25,10 @@ spec:
   <%- if ($password =~ NotUndef) { -%>
     root_password:
       value: <%= $password %>
+  <%- } -%>
+  <%- if ($webhook_hostname =~ NotUndef) { -%>
+    backend_hostname:
+      value: '<%= $webhook_hostname %>'
   <%- } -%>
 <% } -%>
 <%-
