@@ -27,6 +27,7 @@
 * [`get_ingress_ip`](#get_ingress_ip): Returns the ip of the ingress load balancer service.
 * [`get_kots_app_status`](#get_kots_app_status): Return the state of a given Kots application, or not-installed. Will also return not-installed if kots itself is not installed.
 * [`has_ingress_controller`](#has_ingress_controller): Checks whether an ingress controller is installed.
+* [`helm_add_repository`](#helm_add_repository): Add a helm repository.
 * [`helm_install_chart`](#helm_install_chart): Install or upgrade a helm chart.
 * [`kots_download`](#kots_download): Downloads the currently installed source of a given Kots application from the admin console to the given directory. This task is a wrapper ro
 * [`kots_install`](#kots_install): Install a Replicated application with kubectl-kots for testing. This task takes several shortcuts for configuration and security which are no
@@ -40,6 +41,7 @@
 
 ### Plans
 
+* [`pam_tools::install_chart`](#pam_toolsinstall_chart): Install a helm chart.  Optionally adds a helm *repository_uri* before installing.  Optionally waits for rollout of the installed chart based 
 * [`pam_tools::install_published`](#pam_toolsinstall_published): Install a published Replicated application via kubectl-kots.  Runs kubectl-kots with the given license and configuration and waits for deploy
 * [`pam_tools::teardown`](#pam_toolsteardown): In successive tiers, teardown the application, it's admin-console metadata, and the Kots admin-console itself, if desired.  By default, just 
 
@@ -432,6 +434,26 @@ Checks whether an ingress controller is installed.
 
 **Supports noop?** false
 
+### <a name="helm_add_repository"></a>`helm_add_repository`
+
+Add a helm repository.
+
+**Supports noop?** false
+
+#### Parameters
+
+##### `repository_name`
+
+Data type: `String`
+
+Name for the helm repository.
+
+##### `repository_uri`
+
+Data type: `String`
+
+Uri for the helm repository.
+
 ### <a name="helm_install_chart"></a>`helm_install_chart`
 
 Install or upgrade a helm chart.
@@ -759,6 +781,89 @@ Data type: `Pattern[/[0-9]+s/]`
 Number of seconds to wait for Deployment and StatefulSet rollouts to complete.
 
 ## Plans
+
+### <a name="pam_toolsinstall_chart"></a>`pam_tools::install_chart`
+
+Install a helm chart.
+
+Optionally adds a helm *repository_uri* before installing.
+
+Optionally waits for rollout of the installed chart based on a
+*part_of* selector.
+
+#### Parameters
+
+The following parameters are available in the `pam_tools::install_chart` plan:
+
+* [`targets`](#targets)
+* [`chart_name`](#chart_name)
+* [`release`](#release)
+* [`repository_uri`](#repository_uri)
+* [`values_yaml`](#values_yaml)
+* [`namespace`](#namespace)
+* [`part_of`](#part_of)
+* [`timeout`](#timeout)
+
+##### <a name="targets"></a>`targets`
+
+Data type: `TargetSpec`
+
+Test hosts to deploy to.
+
+##### <a name="chart_name"></a>`chart_name`
+
+Data type: `String`
+
+The chart to install.
+
+##### <a name="release"></a>`release`
+
+Data type: `String`
+
+The name of the installed instance of the chart.
+
+##### <a name="repository_uri"></a>`repository_uri`
+
+Data type: `Optional[String]`
+
+If a helm repository uri is given, ensure it is added and updated on targets
+before attempting to install the chart. Will take the repository name from
+the *chart_name* prefix/.
+
+Default value: ``undef``
+
+##### <a name="values_yaml"></a>`values_yaml`
+
+Data type: `Optional[String]`
+
+Optional yaml string of chart values to pass to Helm.
+
+Default value: ``undef``
+
+##### <a name="namespace"></a>`namespace`
+
+Data type: `String`
+
+k8s namespace we're installing into.
+
+Default value: `'default'`
+
+##### <a name="part_of"></a>`part_of`
+
+Data type: `Optional[String]`
+
+If given, plan will wait for rollout of deployments and statefulsets
+matching 'app.kuberneters.io/part-of=${part_of}' until *timeout*.
+
+Default value: ``undef``
+
+##### <a name="timeout"></a>`timeout`
+
+Data type: `Integer`
+
+Number of seconds to wait for the services to all be ready.
+
+Default value: `600`
 
 ### <a name="pam_toolsinstall_published"></a>`pam_tools::install_published`
 

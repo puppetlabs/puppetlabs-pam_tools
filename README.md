@@ -48,7 +48,7 @@ In particular, the target you run bolt against should have:
 * [kubectl]
 * [kubectl-kots]
 * [ruby] \(because most of the tasks are Ruby\)
-* [helm] \(optional, depending on whether you installing helm charts\)
+* [helm] \(optional, depending on whether you are installing helm charts\)
 
 installed.
 
