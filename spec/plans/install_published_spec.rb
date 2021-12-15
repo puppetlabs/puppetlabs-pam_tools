@@ -120,6 +120,7 @@ describe 'pam_tools::install_published' do
       )
     expect_out_message.with_params('  ** Target: spec-host')
     expect_out_message.with_params('  **   connect hostname: spec-host')
+    expect_out_message.with_params('  **   connect webhook: spec-host:8000')
     expect_out_message.with_params('  **   connect root login: noreply@puppet.com')
 
     result = run_plan('pam_tools::install_published', params)
@@ -225,6 +226,14 @@ describe 'pam_tools::install_published' do
         .with_targets(['localhost'])
         .always_return('_output' => '10.20.30.40')
       expect_out_message.with_params('  **   connect hostname: my.app.host')
+
+      result = run_plan('pam_tools::install_published', params)
+      expect(result.ok?).to eq(true)
+    end
+
+    it 'uses webhook hostname' do
+      params['webhook_hostname'] = 'webhook.app.host'
+      expect_out_message.with_params('  **   connect webhook: webhook.app.host:443')
 
       result = run_plan('pam_tools::install_published', params)
       expect(result.ok?).to eq(true)
