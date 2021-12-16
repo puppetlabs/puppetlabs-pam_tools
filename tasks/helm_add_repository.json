@@ -1,0 +1,14 @@
+{
+  "description": "Add a helm repository.",
+  "input_method": "environment",
+  "parameters": {
+    "repository_name": {
+      "description": "Name for the helm repository.",
+      "type": "String"
+    },
+    "repository_uri": {
+      "description": "Uri for the helm repository.",
+      "type": "String"
+    }
+  } 
+}

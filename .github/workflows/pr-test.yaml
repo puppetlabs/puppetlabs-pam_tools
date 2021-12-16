@@ -47,6 +47,19 @@ jobs:
           bolt task run pam_tools::delete_k8s_app_resources --targets=localhost kots_slug=test-chart
       - uses: ./.github/actions/validate-no-pods
 
+  plan-helm-acceptance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: nolar/setup-k3d-k3s@v1
+        with:
+          version: v1.19
+          k3d-args: -p 80:80@loadbalancer -p 443:443@loadbalancer
+      - uses: ./.github/actions/install-bolt
+      - name: Install bitnami/metrics-server chart
+        run: |-
+          bolt plan run pam_tools::install_chart --targets=localhost chart_name=bitnami/metrics-server repository_uri=https://charts.bitnami.com/bitnami release='test-release' values_yaml='commonLabels: { app.kubernetes.io/part-of: metrics-server }' part_of=metrics-server
+
   plan-install-acceptance:
     runs-on: ubuntu-latest
     steps:
