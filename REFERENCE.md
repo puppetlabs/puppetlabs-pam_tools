@@ -57,18 +57,18 @@ minimal test memory instance of 4.5GB.
 This allows you to spin up Connect on an 8GB test host with the PE
 components squeezed down into:
 
-  pam_tools::calculate_pe_memory(4.5)
-  #
-  # {
-  #   'console_memory'           => 768,
-  #   'postgres_console_memory'  => 256,
-  #   'puppetdb_memory'          => 768,
-  #   'postgres_puppetdb_memory' => 512,
-  #   'orchestrator_memory'      => 768,
-  #   'postgres_orch_memory'     => 256,
-  #   'boltserver_memory'        => 256,
-  #   'puppetserver_memory'      => 1024,
-  # }
+    pam_tools::calculate_pe_memory(4.5)
+    #
+    # {
+    #   'console_memory'           => 768,
+    #   'postgres_console_memory'  => 256,
+    #   'puppetdb_memory'          => 768,
+    #   'postgres_puppetdb_memory' => 512,
+    #   'orchestrator_memory'      => 768,
+    #   'postgres_orch_memory'     => 256,
+    #   'boltserver_memory'        => 256,
+    #   'puppetserver_memory'      => 1024,
+    # }
 
 Leaving remaining memory for the rest of Connect and system.
 
@@ -86,18 +86,18 @@ minimal test memory instance of 4.5GB.
 This allows you to spin up Connect on an 8GB test host with the PE
 components squeezed down into:
 
-  pam_tools::calculate_pe_memory(4.5)
-  #
-  # {
-  #   'console_memory'           => 768,
-  #   'postgres_console_memory'  => 256,
-  #   'puppetdb_memory'          => 768,
-  #   'postgres_puppetdb_memory' => 512,
-  #   'orchestrator_memory'      => 768,
-  #   'postgres_orch_memory'     => 256,
-  #   'boltserver_memory'        => 256,
-  #   'puppetserver_memory'      => 1024,
-  # }
+    pam_tools::calculate_pe_memory(4.5)
+    #
+    # {
+    #   'console_memory'           => 768,
+    #   'postgres_console_memory'  => 256,
+    #   'puppetdb_memory'          => 768,
+    #   'postgres_puppetdb_memory' => 512,
+    #   'orchestrator_memory'      => 768,
+    #   'postgres_orch_memory'     => 256,
+    #   'boltserver_memory'        => 256,
+    #   'puppetserver_memory'      => 1024,
+    # }
 
 Leaving remaining memory for the rest of Connect and system.
 
