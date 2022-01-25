@@ -20,6 +20,8 @@ Bolt module providing tasks and plans for installing and managing Puppet Applica
 
 Tooling to assist with installation and removal of [PAM] applications in a k8s cluster. The tasks are wrappers around kubectl and kubectl-kots invocations, and assume the existance of a compatible k8s cluster providing for the application requirements.
 
+By installing via these tools, unless Puppet has otherwise agreed in writing, all software is subject to the terms and conditions of Puppet's Master License Agreement located at https://puppet.com/legal. Additionally when installing Connect, you accept the [Puppet Beta Agreement](https://s3.amazonaws.com/pe-builds/previews/2019+02+Puppet+Beta+Agreement+(On-Prem+Software).pdf).
+
 Compatible with the following cluster types:
 
 * [kURL], specifically [puppet-application-manager-standalone]; not yet tested with a [puppet-application-manager] HA cluster.

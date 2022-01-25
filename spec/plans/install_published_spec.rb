@@ -47,6 +47,8 @@ describe 'pam_tools::install_published' do
             value: 'noreply@puppet.com'
           root_password:
             value: #{password}
+          accept_beta_agreement:
+            value: 'has_accepted_beta_agreement'
           connect_postgres_console_memory:
             value: '#{mem_unit}'
           connect_postgres_puppetdb_memory:
