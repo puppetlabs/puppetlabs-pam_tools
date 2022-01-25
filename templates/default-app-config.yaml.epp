@@ -36,6 +36,8 @@ if ($kots_app == 'connect') {
   # Allocate half the available to PE.
   $memory_allocation = pam_tools::calculate_pe_memory($allocated_memory_in_gigabytes / 2)
 -%>
+    accept_beta_agreement:
+      value: 'has_accepted_beta_agreement'
     connect_postgres_console_memory:
       value: '<%= $memory_allocation['postgres_console_memory'] %>'
     connect_postgres_puppetdb_memory:

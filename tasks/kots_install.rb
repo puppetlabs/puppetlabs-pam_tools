@@ -64,6 +64,11 @@ class KotsInstall < PAMTaskHelper
     config = base_config(appname, hostname)
     spec_values = config['spec']['values']
     spec_values.merge!(root_account_config(appname, password))
+    if appname == 'connect'
+      spec_values['accept_beta_agreement'] = {
+        'value' => 'has_accepted_beta_agreement',
+      }
+    end
 
     config
   end

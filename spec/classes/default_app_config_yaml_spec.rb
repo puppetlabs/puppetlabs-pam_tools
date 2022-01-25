@@ -127,6 +127,7 @@ describe 'pam_tools::test_default_app_config_template' do
             'hostname' => { 'value' => 'test.rspec' },
             'analytics' => { 'value' => '0' },
             'accept_eula' => { 'value' => 'has_accepted_eula' },
+            'accept_beta_agreement' => { 'value' => 'has_accepted_beta_agreement' },
             'root_email' => { 'value' => 'noreply@puppet.com' },
             'root_password' => { 'value' => 'password' },
             'connect_postgres_console_memory' => { 'value' => '455' },
