@@ -7,7 +7,7 @@ on:
 
 env:
   # https://vendor.replicated.com/apps/cd4pe/customer/1liKeLfya3YPpuSoQUAmDLQ4BeL/manage
-  CONNECT_LICENSE: ${{ secrets.CONNECT_LICENSE }}
+  CD4PE_LICENSE: ${{ secrets.CD4PE_LICENSE }}
   KUBECTL_VERSION: v1.22.2
   KOTS_VERSION: v1.52.0
   HELM_VERSION: v3.5.2
@@ -65,7 +65,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Prepare license
-        run: printenv CONNECT_LICENSE > license.yaml
+        run: printenv CD4PE_LICENSE > license.yaml
       - uses: nolar/setup-k3d-k3s@v1
         with:
           version: v1.19
