@@ -6,7 +6,7 @@ on:
     - main
 
 env:
-  # https://vendor.replicated.com/apps/cd4pe/customer/1liKeLfya3YPpuSoQUAmDLQ4BeL/manage
+  # https://vendor.replicated.com/apps/cd4pe/customer/1gI7fCMJ1uCogFlaSQnTFtVJpjW/manage
   CD4PE_LICENSE: ${{ secrets.CD4PE_LICENSE }}
   KUBECTL_VERSION: v1.22.2
   KOTS_VERSION: v1.52.0
