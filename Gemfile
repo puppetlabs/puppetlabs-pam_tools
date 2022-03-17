@@ -13,23 +13,16 @@ def location_for(place_or_version, fake_version = nil)
   end
 end
 
-#ruby_version_segments = Gem::Version.new(RUBY_VERSION.dup).segments
-#minor_version = ruby_version_segments[0..1].join('.')
-# Pinning to 2.6 to keep Gemfile.lock static between Ruby versions when using `bundle exec`
-minor_version = '2.6'
-
 group :development do
   gem 'json', '~>2.5',                                           require: false
-  gem "puppet-module-posix-default-r#{minor_version}", '~> 1.0', require: false, platforms: [:ruby]
-  gem "puppet-module-posix-dev-r#{minor_version}", '~> 1.0',     require: false, platforms: [:ruby]
-  gem "puppet-module-win-default-r#{minor_version}", '~> 1.0',   require: false, platforms: [:mswin, :mingw, :x64_mingw]
-  gem "puppet-module-win-dev-r#{minor_version}", '~> 1.0',       require: false, platforms: [:mswin, :mingw, :x64_mingw]
   gem "bolt", "~> 3.19", ">= 3.19.0", require: false
+  gem "metadata-json-lint", ">= 2.0.2", "< 4.0.0"
+  gem "puppetlabs_spec_helper", ">= 2.9.0", "< 4.0.0"
+  gem "rspec-puppet-facts", ">= 1.10.0", "< 3"
+  gem "rubocop", "= 1.6.1"
+  gem "rubocop-performance", "= 1.9.1"
+  gem "rubocop-rspec", "= 2.0.1"
   gem "github_changelog_generator", '~> 1.15',                   require: false if Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('2.3.0')
-end
-group :system_tests do
-  gem "puppet-module-posix-system-r#{minor_version}", '~> 1.0', require: false, platforms: [:ruby]
-  gem "puppet-module-win-system-r#{minor_version}", '~> 1.0',   require: false, platforms: [:mswin, :mingw, :x64_mingw]
 end
 
 puppet_version = ENV['PUPPET_GEM_VERSION']
